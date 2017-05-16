@@ -21,30 +21,25 @@ Database::Database(QObject *parent) : QObject(parent) {
 //! [constructor]
 
 // [fonction public requete]
-QString Database::requete(QString requete) {
-  QString retour = "";
-  if (db.isOpen()) {
-    query  = db.exec(requete);
-    record = query.record();
-    qDebug() << "Selection réussi :)";
+QString Database::requete(const QString & sqlquery) {
+QSqlQuery query;
+  query.setForwardOnly(true);
+  if (!query.exec(sqlquery))return QString();
 
-    QJsonArray recordsArray;
+  QJsonDocument  json;
+  QJsonArray     recordsArray;
 
-    while(query.next()) {
-      QJsonObject recordObject;
-      for(int i = 0; i < record.count(); i++) {
-        recordObject.insert( query.record().fieldName(i),QJsonValue::fromVariant(query.value(i)) );
-      }
-
-      recordsArray.push_back(recordObject);
-    }
-
-    QJsonDocument json = QJsonDocument(recordsArray);
-  } else {
-    qDebug() << "La requete n'a pas abouti, la base de données est fermée !";
+  while(query.next())
+  {
+     QJsonObject recordObject;
+        for(int x=0; x < query.record().count(); x++)
+        {
+        recordObject.insert( query.record().fieldName(x),QJsonValue::fromVariant(query.value(x)) );
+        }
+     recordsArray.push_back(recordObject);
   }
+  json.setArray(recordsArray);
 
-  qDebug() << json;
-  return retour;
+  return json.toJson();
 }
 //! [fonction public requete]
