@@ -38,11 +38,12 @@ QString Database::requete(QString requete) {
 
       recordsArray.push_back(recordObject);
     }
+
     json.setArray(recordsArray);
   } else {
     qDebug() << "La requete n'a pas abouti, la base de données est fermée !";
   }
 
-  return json.toJson();
+  //return json.toJson();
 }
 //! [fonction public requete]
