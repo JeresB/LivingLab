@@ -13,7 +13,7 @@ class Database : public QObject {
     Q_OBJECT
 public:
     explicit Database(QObject *parent = Q_NULLPTR);
-    QJsonDocument requete(QString requete);
+    QString requete(QString requete);
 
 Q_SIGNALS:
 
