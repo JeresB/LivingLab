@@ -26,7 +26,7 @@ void connexion() {
       qDebug() << "Nouvelle entrée";
       for(int x=0; x < rec.count(); x++) {
         //qDebug() << query.value(nameCol).toString(); // output all names
-        qDebug() << rec.fieldName(x) << " = " << query.value(x));
+        qDebug() << rec.fieldName(x) << " = " << query.value(x);
       }
     }
   } else {
