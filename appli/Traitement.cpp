@@ -4,7 +4,7 @@
 QT_USE_NAMESPACE
 
 // [constructor]
-Traitement::Traitement(QObject *parent = Q_NULLPTR) : QObject(parent) {
+Traitement::Traitement(QObject *parent) : QObject(parent) {
   Database *livinglab = new Database;
 
   livinglab->requete("SELECT * FROM chambre");
