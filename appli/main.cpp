@@ -1,6 +1,6 @@
 #include <QCoreApplication>
-#include "websocket.hpp"
-#include "database.hpp"
+#include "Websocket.hpp"
+#include "Database.hpp"
 
 int main(int argc, char *argv[]) {
   QCoreApplication appli(argc, argv);

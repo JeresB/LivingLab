@@ -1,4 +1,4 @@
-#include "websocket.hpp"
+#include "Websocket.hpp"
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>

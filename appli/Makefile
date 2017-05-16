@@ -48,15 +48,17 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = database.cpp \
+SOURCES       = Database.cpp \
 		main.cpp \
-		websocket.cpp moc_database.cpp \
-		moc_websocket.cpp
-OBJECTS       = database.o \
+		Traitement.cpp \
+		Websocket.cpp moc_Database.cpp \
+		moc_Websocket.cpp
+OBJECTS       = Database.o \
 		main.o \
-		websocket.o \
-		moc_database.o \
-		moc_websocket.o
+		Traitement.o \
+		Websocket.o \
+		moc_Database.o \
+		moc_Websocket.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -118,10 +120,12 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		appli.pro database.hpp \
-		websocket.hpp database.cpp \
+		appli.pro Database.hpp \
+		Traitement.hpp \
+		Websocket.hpp Database.cpp \
 		main.cpp \
-		websocket.cpp
+		Traitement.cpp \
+		Websocket.cpp
 QMAKE_TARGET  = appli
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = appli
@@ -299,8 +303,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents database.hpp websocket.hpp $(DISTDIR)/
-	$(COPY_FILE) --parents database.cpp main.cpp websocket.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents Database.hpp Traitement.hpp Websocket.hpp $(DISTDIR)/
+	$(COPY_FILE) --parents Database.cpp main.cpp Traitement.cpp Websocket.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -323,14 +327,14 @@ check: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc_database.cpp moc_websocket.cpp
+compiler_moc_header_make_all: moc_Database.cpp moc_Websocket.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_database.cpp moc_websocket.cpp
-moc_database.cpp: database.hpp
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/var/www/html/LivingLab/appli -I/var/www/html/LivingLab/appli -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWebSockets -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include database.hpp -o moc_database.cpp
+	-$(DEL_FILE) moc_Database.cpp moc_Websocket.cpp
+moc_Database.cpp: Database.hpp
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/var/www/html/LivingLab/appli -I/var/www/html/LivingLab/appli -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWebSockets -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include Database.hpp -o moc_Database.cpp
 
-moc_websocket.cpp: websocket.hpp
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/var/www/html/LivingLab/appli -I/var/www/html/LivingLab/appli -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWebSockets -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include websocket.hpp -o moc_websocket.cpp
+moc_Websocket.cpp: Websocket.hpp
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/var/www/html/LivingLab/appli -I/var/www/html/LivingLab/appli -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWebSockets -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include Websocket.hpp -o moc_Websocket.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -344,20 +348,23 @@ compiler_clean: compiler_moc_header_clean
 
 ####### Compile
 
-database.o: database.cpp database.hpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o database.o database.cpp
+Database.o: Database.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Database.o Database.cpp
 
-main.o: main.cpp websocket.hpp
+main.o: main.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
-websocket.o: websocket.cpp websocket.hpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o websocket.o websocket.cpp
+Traitement.o: Traitement.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Traitement.o Traitement.cpp
 
-moc_database.o: moc_database.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_database.o moc_database.cpp
+Websocket.o: Websocket.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Websocket.o Websocket.cpp
 
-moc_websocket.o: moc_websocket.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_websocket.o moc_websocket.cpp
+moc_Database.o: moc_Database.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_Database.o moc_Database.cpp
+
+moc_Websocket.o: moc_Websocket.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_Websocket.o moc_Websocket.cpp
 
 ####### Install
 

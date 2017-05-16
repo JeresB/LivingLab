@@ -1,4 +1,4 @@
-#include "database.hpp"
+#include "Database.hpp"
 #include <QDebug>
 
 QT_USE_NAMESPACE
