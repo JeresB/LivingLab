@@ -41,7 +41,6 @@ QString Database::requete(QString requete) {
     json.setArray(recordsArray);
   } else {
     qDebug() << "La requete n'a pas abouti, la base de données est fermée !";
-    exit();
   }
 
   return json.toJson();
