@@ -23,14 +23,14 @@ Database::Database(QObject *parent) : QObject(parent) {
 // [fonction public requete]
 int Database::requete(QString requete) {
   if(query.exec(requete)) {
-    rec = query.record();
+    record = query.record();
     qDebug() << "Selection réussi :)";
-    //int nameCol = rec.indexOf("ip_chambre"); // index of the field "name"
+    //int nameCol = record.indexOf("ip_chambre"); // index of the field "name"
     while(query.next()) {
       qDebug() << "Nouvelle entrée";
-      for(int x=0; x < rec.count(); x++) {
+      for(int x=0; x < record.count(); x++) {
         //qDebug() << query.value(nameCol).toString(); // output all names
-        qDebug() << rec.fieldName(x) << " = " << query.value(x);
+        qDebug() << record.fieldName(x) << " = " << query.value(x);
       }
     }
   } else {
