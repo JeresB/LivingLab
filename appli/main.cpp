@@ -24,7 +24,7 @@ void connexion() {
     int nameCol = rec.indexOf("ip_chambre"); // index of the field "name"
     while(query.next()) {
       qDebug() << "Nouvelle entrée";
-      for(int x=0; x < rec.count(); ++x) {
+      for(int x=0; x < rec.count(); x++) {
         qDebug() << query.value(nameCol).toString(); // output all names
       }
     }
