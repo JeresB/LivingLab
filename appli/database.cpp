@@ -5,7 +5,7 @@ QT_USE_NAMESPACE
 
 // [constructor]
 Database::Database() {
-  QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
+  db = QSqlDatabase::addDatabase("QMYSQL");
 
   db.setHostName("localhost");
   db.setUserName("livinglab");

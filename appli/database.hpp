@@ -19,6 +19,7 @@ private Q_SLOTS:
 
 
 private:
+  QSqlDatabase db;
   QSqlQuery query;
   QSqlRecord record;
 };
