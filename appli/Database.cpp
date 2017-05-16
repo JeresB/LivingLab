@@ -22,29 +22,25 @@ Database::Database(QObject *parent) : QObject(parent) {
 
 // [fonction public requete]
 int Database::requete(QString requete) {
-  QVector<QVariant> valeur;
   if (db.isOpen()) {
     query = db.exec(requete);
     record = query.record();
     qDebug() << "Selection réussi :)";
 
+    QJsonDocument  json;
+    QJsonArray     recordsArray;
+
     while(query.next()) {
-      for(int i=0; i < record.count(); i++) {
-        QString colonne = record.fieldName(i);
-        QVariant value = query.value(i);
-        QJsonValue json;
-        if (value.canConvert<int>()) {
-          QJsonValue json = value.toInt();
-        } else if (value.canConvert<QString>()) {
-          QJsonValue json = value.toString();
-        }
-        qDebug() << colonne << " = " << json;
-
-
-
-        //valeur.insert(record.fieldName(i), query.value(i).toJsonValue());
+      QJsonObject recordObject;
+      for(int i = 0; i < record.count(); i++) {
+        recordObject.insert( query.record().fieldName(i),QJsonValue::fromVariant(query.value(i)) );
       }
+
+      recordsArray.push_back(recordObject);
     }
+
+    json.setArray(recordsArray);
+
   } else {
     qDebug() << "La requete n'a pas abouti, la base de données est fermée !";
   }
