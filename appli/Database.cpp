@@ -21,10 +21,11 @@ Database::Database(QObject *parent) : QObject(parent) {
 //! [constructor]
 
 // [fonction public requete]
-QString Database::requete(const QString & sqlquery) {
+QByteArray Database::requete(const QString & sqlquery) {
 QSqlQuery query;
+QByteArray jsonDocBinaire;
   query.setForwardOnly(true);
-  if (!query.exec(sqlquery))return QString();
+  if (!query.exec(sqlquery))return jsonDocBinaire;
 
   QJsonDocument  json;
   QJsonArray     recordsArray;
@@ -40,7 +41,7 @@ QSqlQuery query;
   }
   json.setArray(recordsArray);
 
-  qDebug() << json.toJson() << "----------" << json;
-  return json.toJson();
+  qDebug() << json.toJson() << "----------" << json << "-----------" << json.toBinaryData();
+  return json.toBinaryData();
 }
 //! [fonction public requete]

@@ -8,12 +8,13 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QByteArray>
 
 class Database : public QObject {
     Q_OBJECT
 public:
     explicit Database(QObject *parent = Q_NULLPTR);
-    QString requete(const QString & sqlquery);
+    QByteArray requete(const QString & sqlquery);
 
 Q_SIGNALS:
 
