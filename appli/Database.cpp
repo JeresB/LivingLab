@@ -43,7 +43,7 @@ QString Database::requete(QString requete) {
   // } else {
   //   qDebug() << "La requete n'a pas abouti, la base de données est fermée !";
   // }
-
+}
   //return json.toJson();
 }
 //! [fonction public requete]
