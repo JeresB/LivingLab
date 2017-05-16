@@ -29,5 +29,5 @@ int Traitement::roomList() {
   QJsonValue value_ip = JsonObject.at(0);
   QJsonObject object = value_ip.toObject();
   qDebug() << JsonObject.at(0);
-  qDebug() << object.value(QString{"ip_chambre"});
+  qDebug() << object.value(QString{"ip_chambre"}).toString();
 }
