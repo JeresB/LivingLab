@@ -7,7 +7,7 @@
 class Traitement : public QObject {
   Q_OBJECT
 public:
-    explicit Traitement(QObject *parent = Q_NULLPTR);
+    Traitement(QObject *parent = Q_NULLPTR);
     ~Traitement(){};
 
 Q_SIGNALS:
