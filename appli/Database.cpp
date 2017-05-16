@@ -33,7 +33,12 @@ int Database::requete(QString requete) {
         QString colonne = record.fieldName(i);
         QVariant value = query.value(i);
 
-        qDebug() << colonne << " = " << value << " type : " << value.typeName();
+        if (value.canConvert<int>()) {
+          QJsonValue json = value.toInt();
+        } else if (value.canConvert<QString>()) {
+          QJsonValue json = value.toString();
+        }
+        qDebug() << colonne << " = " << json;
 
 
 
