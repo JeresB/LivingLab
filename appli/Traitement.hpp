@@ -8,14 +8,14 @@ class Traitement : public QObject {
   Q_OBJECT
 public:
     Traitement(QObject *parent = Q_NULLPTR);
-    ~Traitement(){};
+     int roomList();
 
 Q_SIGNALS:
 
 private Q_SLOTS:
 
 private:
-
+  Database *livinglab;
 };
 
 #endif // TRAITEMENT_H

@@ -19,47 +19,18 @@
 		if ($db != false) {
 			$request_explode = explode('/', $request);
 			$requestType = $_SERVER['REQUEST_METHOD'];
-			if($request_explode[0] == 'galerie') {
+			if($request_explode[0] == 'listCapteur') {
 				$data = NULL;
 
 				$id = $request_explode[1];
 
 				if ($id != NULL && $id != "" && $requestType == 'GET') {
 					$id = intval($id);
-					$data = dbRequestGalerie($db, $id);
+					$data = dbRequestCapteur($db, $id);
 
 				} else if ($requestType == 'GET') {
-					$data = dbRequestGalerie($db);
+					$data = dbRequestCapteur($db);
 				}
-				// } else if ($id != NULL && $id != "" && $requestType == 'PUT') {
-				// 	parse_str(file_get_contents('php://input'), $_PUT);
-				// 	error_log($_PUT['choice']);
-				// 	$data = dbReplyPoll($db, intval($id), $_PUT['choice']);
-				//
-				// } else if ($id != NULL && $id != "" && $requestType == 'POST') {
-				// 	$data = dbAddPoll($db, $_POST['login'], $_POST['title'],
-				// 	$_POST['option1'], $_POST['option2'], $_POST['option3']);
-				//
-				// }
-				if ($data != NULL)
-					sendJsonData($data);
-			} else if ($request_explode[0] == 'commentaire') {
-				$data = NULL;
-
-				$id = $request_explode[1];
-
-				if ($id != NULL && $id != "" && $requestType == 'GET') {
-					$id = intval($id);
-					$data = dbRequestCommentaire($db, $id);
-				}
-
-				$commentaire = htmlspecialchars($_POST["commentaire"]);
-				$id_image = htmlspecialchars($_POST["id_image"]);
-
-				if ($_POST["commentaire"] != NULL && $_POST["commentaire"] != "" && $_POST["id_image"] != NULL && $_POST["id_image"] != "" && $requestType == 'POST') {
-					$data = dbAddCommentaire($db, $commentaire, $id_image);
-				}
-
 				if ($data != NULL)
 					sendJsonData($data);
 			} else {

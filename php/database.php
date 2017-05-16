@@ -14,12 +14,12 @@ function dbConnect()
 function dbRequestCapteur($db, $id = -1)
 {
   try {
-    $request = 'SELECT co2, chute, temperature, humidite, four, capteur.id_chambre FROM capteur, chambre, utilisateur';
-    $request .= ' WHERE capteur.id_chambre = chambre.id_chambre AND chambre.id_chambre = utilisateur.id_chambre';
+    $request = 'SELECT date_heure, co2, chute, temperature, humidite, four FROM capteur, chambre';
+    $request .= ' WHERE capteur.id_chambre = chambre.id_chambre';
 
     $statement = $db->prepare($request);
     $statement->execute();
-    
+
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
   }catch (PDOException $exception) {
     error_log('Request error: '.$exception->getMessage());
