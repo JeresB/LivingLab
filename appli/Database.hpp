@@ -5,9 +5,6 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlRecord>
-#include <QJsonObject>
-#include <QJsonValue>
-#include <QVariant>
 #include <QJsonArray>
 #include <QJsonDocument>
 
@@ -15,7 +12,7 @@ class Database : public QObject {
     Q_OBJECT
 public:
     explicit Database(QObject *parent = Q_NULLPTR);
-    int requete(QString requete);
+    QJsonDocument requete(QString requete);
 
 Q_SIGNALS:
 

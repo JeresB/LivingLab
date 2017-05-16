@@ -21,9 +21,9 @@ Database::Database(QObject *parent) : QObject(parent) {
 //! [constructor]
 
 // [fonction public requete]
-int Database::requete(QString requete) {
+QJsonDocument Database::requete(QString requete) {
   if (db.isOpen()) {
-    query = db.exec(requete);
+    query  = db.exec(requete);
     record = query.record();
     qDebug() << "Selection réussi :)";
 
@@ -38,11 +38,12 @@ int Database::requete(QString requete) {
 
       recordsArray.push_back(recordObject);
     }
-
     json.setArray(recordsArray);
-    qDebug() << "json" << json;
   } else {
     qDebug() << "La requete n'a pas abouti, la base de données est fermée !";
+    return false;
   }
+
+  return json;
 }
 //! [fonction public requete]
