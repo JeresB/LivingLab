@@ -5,6 +5,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlRecord>
+#include <QJsonValue>
 
 class Database : public QObject {
     Q_OBJECT
