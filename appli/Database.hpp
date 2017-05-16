@@ -13,7 +13,7 @@ class Database : public QObject {
     Q_OBJECT
 public:
     explicit Database(QObject *parent = Q_NULLPTR);
-    QString requete(QString requete);
+    QString requete(const QString & sqlquery);
 
 Q_SIGNALS:
 
