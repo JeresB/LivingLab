@@ -11,10 +11,10 @@ Traitement::Traitement(QObject *parent) : QObject(parent) {
 
   // Fonction de récupération des adresses IP des pièces
   success = roomList();
-  livinglab->requete("SELECT * FROM chambre");
+
 }
 //! [constructor]
 
 int Traitement::roomList() {
-
+  livinglab->requete("SELECT * FROM chambre");
 }
