@@ -26,9 +26,9 @@ QString Database::requete(QString requete) {
     query  = db.exec(requete);
     record = query.record();
     qDebug() << "Selection réussi :)";
-
-    QJsonDocument  json;
-    QJsonArray     recordsArray;
+    // 
+    // QJsonDocument  json;
+    // QJsonArray     recordsArray;
 
   //   while(query.next()) {
   //     QJsonObject recordObject;
