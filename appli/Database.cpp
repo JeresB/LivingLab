@@ -28,8 +28,7 @@ QString Database::requete(QString requete) {
     record = query.record();
     qDebug() << "Selection réussi :)";
 
-    QJsonDocument  json = QJsonDocument;
-    QJsonArray     recordsArray;
+    QJsonArray recordsArray;
 
     while(query.next()) {
       QJsonObject recordObject;
@@ -40,7 +39,7 @@ QString Database::requete(QString requete) {
       recordsArray.push_back(recordObject);
     }
 
-    json.setArray(recordsArray);
+    QJsonDocument json = QJsonDocument(recordsArray);
   } else {
     qDebug() << "La requete n'a pas abouti, la base de données est fermée !";
   }
