@@ -21,11 +21,12 @@ void connexion() {
   if(query.exec("SELECT * FROM chambre")) {
     QSqlRecord rec = query.record();
     qDebug() << "Selection réussi :)";
-    int nameCol = rec.indexOf("ip_chambre"); // index of the field "name"
+    //int nameCol = rec.indexOf("ip_chambre"); // index of the field "name"
     while(query.next()) {
       qDebug() << "Nouvelle entrée";
       for(int x=0; x < rec.count(); x++) {
-        qDebug() << query.value(nameCol).toString(); // output all names
+        //qDebug() << query.value(nameCol).toString(); // output all names
+        qDebug() << rec.fieldName(x) << " = " << query.value(x));
       }
     }
   } else {
