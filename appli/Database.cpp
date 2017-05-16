@@ -31,7 +31,7 @@ int Database::requete(QString requete) {
     while(query.next()) {
       for(int i=0; i < record.count(); i++) {
         QString colonne = record.fieldName(i);
-        Qvariant value = query.value(i);
+        QVariant value = query.value(i);
         QJsonObject json = value.toJsonValue();
         qDebug() << colonne << " = " << value;
         qDebug() << colonne << " = " << query.value(i);
