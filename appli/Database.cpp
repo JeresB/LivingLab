@@ -22,11 +22,12 @@ Database::Database(QObject *parent) : QObject(parent) {
 
 // [fonction public requete]
 QString Database::requete(QString requete) {
+  QString retour = "";
   if (db.isOpen()) {
     query  = db.exec(requete);
     record = query.record();
     qDebug() << "Selection réussi :)";
-    // 
+    //
     // QJsonDocument  json;
     // QJsonArray     recordsArray;
 
@@ -45,5 +46,6 @@ QString Database::requete(QString requete) {
   // }
 }
   //return json.toJson();
+  return retour;
 }
 //! [fonction public requete]
