@@ -31,7 +31,7 @@ int Database::requete(QString requete) {
     while(query.next()) {
       for(int i=0; i < record.count(); i++) {
         qDebug() << record.fieldName(i) << " = " << query.value(i);
-        valeur.insert(record.fieldName(i), query.value(i));
+        valeur.insert(record.fieldName(i), query.value(i).toJsonValue());
       }
     }
   } else {
