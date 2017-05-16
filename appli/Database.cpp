@@ -4,7 +4,7 @@
 QT_USE_NAMESPACE
 
 // [constructor]
-Database::Database(QObject *parent = Q_NULLPTR) : QObject(parent) {
+Database::Database(QObject *parent) : QObject(parent) {
   db = QSqlDatabase::addDatabase("QMYSQL");
 
   db.setHostName("localhost");
