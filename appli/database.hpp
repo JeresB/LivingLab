@@ -9,7 +9,7 @@
 class Database : public QObject {
     Q_OBJECT
 public:
-    explicit Database(QObject *parent = Q_NULLPTR);
+    explicit Database();
     int requete(QString requete);
 
 Q_SIGNALS:
