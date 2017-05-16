@@ -7,7 +7,7 @@ int main(int argc, char *argv[]) {
 
   WebSocket chambre1(QUrl(QStringLiteral("ws://192.168.199.30:1000")));
 
-  Database livinglab = new Database(this);
+  Database livinglab = new Database(appli);
 
   return appli.exec();
 }
