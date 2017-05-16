@@ -23,6 +23,7 @@ int Traitement::roomList() {
   json = QJsonDocument::fromBinaryData(result);
 
   QJsonObject JsonObject = json.object();
+  qDebug() << JsonObject << "rogifvovji";
 
   qDebug() << JsonObject.value(QString{"ip_chambre"});
 }
