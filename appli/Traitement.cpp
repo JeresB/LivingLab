@@ -29,5 +29,8 @@ int Traitement::roomList() {
   QJsonValue value_ip = JsonObject.at(0);
   QJsonObject object = value_ip.toObject();
   qDebug() << JsonObject.at(0);
+  // Renvoie un QString avec la première adresse ip
   qDebug() << object.value(QString{"ip_chambre"}).toString();
+
+
 }
