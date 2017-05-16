@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
 
   Database *livinglab = new Database;
 
-  livinglab::requete("SELECT * FROM chambre");
+  livinglab->requete("SELECT * FROM chambre");
 
   return appli.exec();
 }
