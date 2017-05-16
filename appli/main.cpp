@@ -1,6 +1,6 @@
 #include <QCoreApplication>
 #include "Websocket.hpp"
-#include "Database.hpp"
+#include "Traitement.hpp"
 
 int main(int argc, char *argv[]) {
   QCoreApplication appli(argc, argv);
