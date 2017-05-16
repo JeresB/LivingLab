@@ -40,6 +40,7 @@ QSqlQuery query;
   }
   json.setArray(recordsArray);
 
+  qDebug() << json.toJson() << "----------" << json;
   return json.toJson();
 }
 //! [fonction public requete]
