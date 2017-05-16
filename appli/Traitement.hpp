@@ -8,7 +8,7 @@ class Traitement : public QObject {
   Q_OBJECT
 public:
     Traitement(QObject *parent = Q_NULLPTR);
-     int roomList();
+    int roomList();
 
 Q_SIGNALS:
 

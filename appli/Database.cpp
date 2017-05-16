@@ -22,21 +22,20 @@ Database::Database(QObject *parent) : QObject(parent) {
 
 // [fonction public requete]
 int Database::requete(QString requete) {
+  QVector<QJsonObject> valeur;
   if (db.isOpen()) {
-    /* code */
-  query = db.exec(requete);
+    query = db.exec(requete);
     record = query.record();
     qDebug() << "Selection réussi :)";
-    //int nameCol = record.indexOf("ip_chambre"); // index of the field "name"
+
     while(query.next()) {
-      qDebug() << "Nouvelle entrée";
-      for(int x=0; x < record.count(); x++) {
-        //qDebug() << query.value(nameCol).toString(); // output all names
-        qDebug() << record.fieldName(x) << " = " << query.value(x);
+      for(int i=0; i < record.count(); i++) {
+        qDebug() << record.fieldName(i) << " = " << query.value(i);
+        valeur.insert(record.fieldName(i), query.value(i));
       }
     }
   } else {
-  qDebug() << "base de données par ouverte dans la requete";
-}
+    qDebug() << "La requete n'a pas abouti, la base de données est fermée !";
+  }
 }
 //! [fonction public requete]
