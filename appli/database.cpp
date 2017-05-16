@@ -22,6 +22,8 @@ Database::Database() {
 
 // [fonction public requete]
 int Database::requete(QString requete) {
+  if (db->isOpen()) {
+    /* code */
   if(query.exec(requete)) {
     record = query.record();
     qDebug() << "Selection réussi :)";
@@ -36,5 +38,8 @@ int Database::requete(QString requete) {
   } else {
     qDebug() << "Une erreur s'est produite. :(";
   }
+} else {
+  qDebug() << "base de données par ouverte dans la requete";
+}
 }
 //! [fonction public requete]
