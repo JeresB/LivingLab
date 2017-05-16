@@ -1,5 +1,7 @@
 #include "websocket.hpp"
 #include <QDebug>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 QT_USE_NAMESPACE
 
