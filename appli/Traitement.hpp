@@ -2,6 +2,7 @@
 #define TRAITEMENT_H
 
 #include <QObject>
+#include <QByteArray>
 #include "Database.hpp"
 
 class Traitement : public QObject {

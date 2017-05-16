@@ -16,5 +16,10 @@ Traitement::Traitement(QObject *parent) : QObject(parent) {
 //! [constructor]
 
 int Traitement::roomList() {
-  livinglab->requete("SELECT * FROM chambre");
+  QByteArray result;
+  QJsonDocument json;
+  result = livinglab->requete("SELECT * FROM chambre");
+
+  json = QJsonDocument::fromBinaryData(result);
+  qDebug() << json << "putain de merde";
 }
