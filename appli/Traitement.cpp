@@ -26,7 +26,7 @@ int Traitement::roomList() {
   qDebug() << json << "rogifvovji";
   qDebug() << JsonObject << "rogifvovji";
 
-  QJsonObject value_ip = JsonObject.at(0);
+  QJsonValue value_ip = JsonObject.at(0);
   qDebug() << JsonObject.at(0);
   qDebug() << value_ip.value(QString{"ip_chambre"});
 }
