@@ -8,6 +8,8 @@
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QVariant>
+#include <QJsonArray>
+#include <QJsonDocument>
 
 class Database : public QObject {
     Q_OBJECT
