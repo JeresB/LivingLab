@@ -40,7 +40,7 @@ int Database::requete(QString requete) {
     }
 
     json.setArray(recordsArray);
-
+    qDebug() << "json" << json;
   } else {
     qDebug() << "La requete n'a pas abouti, la base de données est fermée !";
   }
