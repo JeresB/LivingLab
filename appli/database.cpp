@@ -24,7 +24,7 @@ Database::Database() {
 int Database::requete(QString requete) {
   if (db.isOpen()) {
     /* code */
-  if(query.exec(requete)) {
+  query = db.exec(requete);
     record = query.record();
     qDebug() << "Selection réussi :)";
     //int nameCol = record.indexOf("ip_chambre"); // index of the field "name"
@@ -36,9 +36,6 @@ int Database::requete(QString requete) {
       }
     }
   } else {
-    qDebug() << "Une erreur s'est produite. :(";
-  }
-} else {
   qDebug() << "base de données par ouverte dans la requete";
 }
 }
