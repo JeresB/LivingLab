@@ -21,5 +21,8 @@ int Traitement::roomList() {
   result = livinglab->requete("SELECT * FROM chambre");
 
   json = QJsonDocument::fromBinaryData(result);
-  qDebug() << json << "putain de merde";
+
+  QJsonObject JsonObject = json.object();
+
+  qDebug() << JsonObject.value(QString{"ip_chambre"});
 }
