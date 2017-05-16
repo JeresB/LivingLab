@@ -22,7 +22,7 @@ Database::Database(QObject *parent) : QObject(parent) {
 
 // [fonction public requete]
 int Database::requete(QString requete) {
-  QVector<QJsonObject> valeur;
+  QVector<QVariant> valeur;
   if (db.isOpen()) {
     query = db.exec(requete);
     record = query.record();
@@ -33,14 +33,9 @@ int Database::requete(QString requete) {
         QString colonne = record.fieldName(i);
         QVariant value = query.value(i);
 
-        if (value.canConvert<int>()) {
-          QJsonValue json = QJsonValue(value.toInt());
-        } else if (value.canConvert<string>) {
-          QJsonValue json = QJsonValue(value.toString());
-        }
-        //qDebug() << colonne << " = " << value;
-        //qDebug() << colonne << " = " << query.value(i);
-        qDebug() << colonne << " = " << json;
+        qDebug() << colonne << " = " << value << " type : " << value.typeName();
+
+
 
         //valeur.insert(record.fieldName(i), query.value(i).toJsonValue());
       }
