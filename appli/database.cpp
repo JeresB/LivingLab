@@ -22,7 +22,7 @@ Database::Database() {
 
 // [fonction public requete]
 int Database::requete(QString requete) {
-  if (db->isOpen()) {
+  if (db.isOpen()) {
     /* code */
   if(query.exec(requete)) {
     record = query.record();
