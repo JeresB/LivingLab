@@ -21,5 +21,15 @@ void WebSocket::onConnected() {
 //! [onTextMessageReceived]
 void WebSocket::onTextMessageReceived(QString message) {
 	qDebug() << message;
+
+  QJsonDocument donnees = QJsonDocument::fromJson(message.toUtf8());
+  QJsonObject JsonObject = donnees.object();
+
+  qDebug() << JsonObject.value(QString{"USER"});
+  qDebug() << JsonObject.value(QString{"MTH02"});
+  qDebug() << JsonObject.value(QString{"CO2"});
+  qDebug() << JsonObject.value(QString{"FALL"});
+  qDebug() << JsonObject.value(QString{"OVEN"});
+  qDebug() << JsonObject.value(QString{"TV"});
 }
 //! [onTextMessageReceived]
