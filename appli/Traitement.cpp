@@ -16,21 +16,14 @@ Traitement::Traitement(QObject *parent) : QObject(parent) {
 //! [constructor]
 
 int Traitement::roomList() {
-  QByteArray result;
-  QJsonDocument json;
-  result = livinglab->requete("SELECT * FROM chambre");
+  QByteArray result = livinglab->requete("SELECT * FROM chambre");
 
-  json = QJsonDocument::fromBinaryData(result);
+  QJsonDocument jsonDoc = QJsonDocument::fromBinaryData(result);
 
-  QJsonArray JsonObject = json.array();
-  qDebug() << json << "rogifvovji";
-  qDebug() << JsonObject << "rogifvovji";
+  QJsonArray jsonArray = jsonDoc.array();
 
-  QJsonValue value_ip = JsonObject.at(0);
-  QJsonObject object = value_ip.toObject();
-  qDebug() << JsonObject.at(0);
-  // Renvoie un QString avec la première adresse ip
-  qDebug() << object.value(QString{"ip_chambre"}).toString();
-
-
+  QJsonValue champ = jsonArray.at(0);
+  QjsonObject champObject = champ.toObject();
+  qDebug() << jsonArray.at(0);
+  qDebug() << champObject.value(QString{"ip_chambre"}).toString();
 }
