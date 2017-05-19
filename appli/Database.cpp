@@ -13,9 +13,9 @@ Database::Database(QObject *parent) : QObject(parent) {
   db.setDatabaseName("livinglab");
 
   if(db.open()) {
-    qDebug() << "Vous êtes maintenant connecté à " << db.hostName();
+    qDebug() << "[INFO] : Connexion vers" << db.hostName() << ": SUCCESS";
   } else {
-    qDebug() << "La connexion a échouée, désolé";
+    qWarning() << "[WARNING] : Connexion vers" << db.hostName() << ": FAILED";
   }
 }
 //! [constructor]
@@ -41,7 +41,31 @@ QByteArray jsonDocBinaire;
   }
   json.setArray(recordsArray);
 
-  qDebug() << json.toJson() << "----------" << json << "-----------" << json.toBinaryData();
+  //qDebug() << json.toJson() << "----------" << json;
   return json.toBinaryData();
 }
 //! [fonction public requete]
+
+int Database::insertCapteurs( QString values) {
+  QSqlQuery query;
+
+  QString insert = "INSERT INTO `capteur`(`date_heure`, `co2`, `chute`, `temperature`, `humidite`, `four`, `detection_alerte`, `id_chambre`) VALUES ";
+  QString requete = insert + values;
+
+  qDebug() << requete;
+  if(query.exec(requete)) {
+    qDebug() << "La requete à bien été effectuée !!!";
+  } else qDebug() << "Une erreur s'est produite. :(";
+}
+
+int Database::insertCapteursUser( QString values) {
+  QSqlQuery query;
+
+  QString insert = "INSERT INTO `capteurUser` (`temps`, `pas`, `user`, `numero`) VALUES ";
+  QString requete = insert + values;
+
+  qDebug() << requete;
+  if(query.exec(requete)) {
+    qDebug() << "La requete à bien été effectuée !!!";
+  } else qDebug() << "Une erreur s'est produite. :(";
+}
