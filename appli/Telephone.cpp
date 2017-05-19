@@ -17,24 +17,16 @@ Telephone::Telephone(const QUrl &url, QString numero, QObject *parent) : QObject
 void Telephone::onConnected() {
   connect(&m_Telephone, &QWebSocket::textMessageReceived,
     this, &Telephone::onTextMessageReceived);
-
-    //emit textMessageReceived(QString("{\"TIME\":1493740127807,\"USER\":\"identifiant\",\"Pas\":247}"));
 }
 //! [onConnected]
 
 // [onTextMessageReceived]
 void Telephone::onTextMessageReceived(QString message) {
-	qDebug() << "MESSAGE VENUE DE TELEPHONE "<< message;
-
   bool ok;
+
   QJsonDocument donnees = QJsonDocument::fromJson(message.toUtf8());
   QJsonObject JsonObject = donnees.object();
 
-  QStringList keys = JsonObject.keys();
-
-  for (int i = 0; i < keys.count(); i++) {
-    qDebug() << "aaaaaaaaaaaaaaaaaaaaaaaaa" << keys[i];
-  }
   QString date_time;
   // On récupère la valeur TimeStamp
   date_time.setNum(JsonObject.value(QString{"TIME"}).toDouble(), 'f', 0);
@@ -45,8 +37,11 @@ void Telephone::onTextMessageReceived(QString message) {
 
   QString date = timestamp.toString(QString("yyyy-MM-dd hh:mm:ss"));
 
+
+  //double pas_d = JsonObject.value(QString{"STEP"}).toDouble();
+  //QString pas_s = JsonObject.value(QString{"STEP"}).toString();
   int pas = JsonObject.value(QString{"STEP"}).toInt();
-  qDebug() << "LES PASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS" << pas;
+  //qDebug() << "Pas de l'utilisateur -> int :" << pas << "string :" << pas_s << "double :" << pas_d;
   QString user = JsonObject.value(QString{"USER"}).toString();
 
   emit sendTextToProcess(date, pas, user, m_numero);
@@ -60,8 +55,9 @@ QString Telephone::getID() {
 //! [GETTERS]
 
 // [SETTERS]
-void Telephone::setAllSeuil(QString pas) {
+int Telephone::setAllSeuil(QString pas) {
   t_pas = pas;
-  qDebug() << "Seuil Telephone = " << t_pas;
+
+  return true;
 }
 //! [SETTERS]

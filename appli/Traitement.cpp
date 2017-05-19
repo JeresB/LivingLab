@@ -5,27 +5,20 @@ QT_USE_NAMESPACE
 
 // [constructor]
 Traitement::Traitement(QObject *parent) : QObject(parent) {
-  bool success = false;
   // Création de la connexion à la base de données
   livinglab = new Database;
 
   // Fonction de récupération des adresses IP des pièces
-  success = List("room");
-  if (success == true) {
-    qDebug() << "[INFO] : Récupération de la liste des chambres : SUCCESS";
-  } else {
-    qWarning() << "[WARNING] : Récupération de la liste des chambres : FAILED";
-  }
+  if (List("room")) qDebug() << "[INFO] : Récupération de la liste des chambres : SUCCESS";
+  else qWarning() << "[WARNING] : Récupération de la liste des chambres : FAILED";
 
   // Fonction de récupération des adresses IP de l'utilsateur
-  success = List("user");
-  if (success == true) {
-    qDebug() << "[INFO] : Récupération de la liste des telephones : SUCCESS";
-  } else {
-    qWarning() << "[WARNING] : Récupération de la liste des telephones : FAILED";
-  }
+  if (List("user")) qDebug() << "[INFO] : Récupération de la liste des telephones : SUCCESS";
+  else qWarning() << "[WARNING] : Récupération de la liste des telephones : FAILED";
 
-  success = roomSeuil();
+  if (roomSeuil()) qDebug() << "[INFO] : Récupération des seuils des chambres : SUCCESS";
+  else qWarning() << "[WARNING] : Récupération des seuils des chambres : FAILED";
+
   if (telephoneSeuil()) qDebug() << "[INFO] : Récupération des seuils des telephones : SUCCESS";
   else qWarning() << "[WARNING] : Récupération des seuils des telephones : FAILED";
 
@@ -35,10 +28,10 @@ Traitement::Traitement(QObject *parent) : QObject(parent) {
 int Traitement::List(QString type) {
   bool success = false;
   QByteArray result;
-  qDebug() << "Le type = " << type;
 
   if(type == "room") result = livinglab->requete("SELECT * FROM chambre");
   else if(type == "user") result = livinglab->requete("SELECT * FROM telephone");
+  else return false;
 
   QJsonDocument jsonDoc = QJsonDocument::fromBinaryData(result);
   QJsonArray jsonArray = jsonDoc.array();
@@ -61,14 +54,14 @@ int Traitement::List(QString type) {
       success = openConnexionUser(tel, IP, port);
     }
 
-    if (success == false) return success;
+    if (success == false) return false;
   }
 
   return success;
 }
 
 int Traitement::roomSeuil() {
-  bool success = true;
+  bool success = false;
 
   // Tableau qui contiendra toutes les valeurs des seuils recueillis
   int v[6];
@@ -77,7 +70,6 @@ int Traitement::roomSeuil() {
   QByteArray result = livinglab->requete(requete);
 
   QJsonDocument jsonDoc = QJsonDocument::fromBinaryData(result);
-
   QJsonArray jsonArray = jsonDoc.array();
 
   for (int i = 0; i < jsonArray.count(); i++) {
@@ -94,8 +86,7 @@ int Traitement::roomSeuil() {
 
     for (int j = 0; j < vect_chambre.size(); j++) {
       if (vect_chambre[j]->getID() == champObject.value(QString{"id_chambre"}).toInt()) {
-        qDebug() << "VERIFICATION ID : " << vect_chambre[j]->getID() << " = " << champObject.value(QString{"id_chambre"}).toInt();
-        vect_chambre[j]->setAllSeuil(v[0], v[1], v[2], v[3], v[4], v[5], v6);
+        success = vect_chambre[j]->setAllSeuil(v[0], v[1], v[2], v[3], v[4], v[5], v6);
       }
     }
   }
@@ -108,63 +99,94 @@ int Traitement::openConnexionChambre(int id, QString IP, int port) {
 
   try {
     vect_chambre << new Chambre(QUrl(url), id);
-    connect(vect_chambre.last(), SIGNAL(sendTextToProcess(QString, int, bool, float, float, bool, int)), this, SLOT(saveDataRoomToProcess(QString, int, bool, float, float, bool, int)));
+    vect_four_allume << QTime(0, 0, 0, 0);
+    connect(vect_chambre.last(), SIGNAL(sendTextToProcess(QDateTime, int, bool, float, float, bool, int)),
+     this, SLOT(saveDataRoomToProcess(QDateTime, int, bool, float, float, bool, int)));
 
-
+    qDebug() << "[INFO] : Connexion à l'adresse :" << url << ": établie !";
     return true;
   } catch(...) {
     return false;
   }
 }
 
-void Traitement::saveDataRoomToProcess(QString date, int co2, bool fall, float temp, float hum, bool oven, int id) {
-  qDebug() << "DATA SAVING = " << date;
+void Traitement::saveDataRoomToProcess(QDateTime date, int co2, bool fall, float temp, float hum, bool oven, int id) {
   bool alerte = false;
+
 
   for (int i = 0; i < vect_chambre.size(); i++) {
     if (vect_chambre[i]->getID() == id) {
+
+      QTime seuil_four = QTime::fromString(vect_chambre[i]->getFour(), "hh:mm:ss");
+
+      if (!oven) {
+        vect_four_allume[i] = vect_four_allume[i].addSecs(60);
+      } else {
+        vect_four_allume[i].setHMS(0, 0, 0);
+      }
+
+      QString fa = vect_four_allume[i].toString(QString("hh:mm:ss"));
+      QString sf = seuil_four.toString(QString("hh:mm:ss"));
+      if (vect_four_allume[i] > seuil_four) {
+        qWarning() << "[WARNING] : Four allumé depuis :" << fa << " Temps de fonctionnement réglementaire :" << sf;
+      } else qWarning() << "[INFO] : Four allumé depuis :" << fa << " Temps de fonctionnement réglementaire :" << sf;
+
+
+
       if (co2 > vect_chambre[i]->getCO2_M()) {
         if (co2 > vect_chambre[i]->getCO2_H()) {
           // alerte SMS, le co2 dépasse le seuil haut
           alerte = true;
+          qWarning() << "[DANGER] : Le co2 a dépassé le seuil dangereux :" << vect_chambre[i]->getCO2_H() << "il vaut actuellement : " << co2 << "ppm";
+        } else {
+          // alerte mail, le co2 dépasse le seuil moyen
+          alerte = true;
+          qWarning() << "[WARNING] : Le co2 a dépassé le seuil d'avertissement :" << vect_chambre[i]->getCO2_M() << "il vaut actuellement : " << co2 << "ppm";
         }
-        // alerte mail, le co2 dépasse le seuil moyen
-        alerte = true;
       }
 
       if (fall) {
         // alerte l'utilsateur est tombé
         alerte = true;
+        qWarning() << "[DANGER] : L'utilisateur est tombé !!!";
       }
 
       if (temp > vect_chambre[i]->getTemp_Max() || temp < vect_chambre[i]->getTemp_Min()) {
         // alerte la temperature ne respecte pas l'interval demandé
         alerte = true;
+        qWarning() << "[WARNING] : La température est de :" << temp << ", elle a dépassée l'interval autorisé [" << vect_chambre[i]->getTemp_Min() << ", " << vect_chambre[i]->getTemp_Max() << "]";
       }
 
       if (hum > vect_chambre[i]->getHum_Max() || hum < vect_chambre[i]->getHum_Min()) {
         // alerte l'humidité ne respecte pas l'interval demandé
         alerte = true;
+        qWarning() << "[WARNING] : L'humidité est de :" << hum << ", elle a dépassée l'interval autorisé [" << vect_chambre[i]->getHum_Min() << ", " << vect_chambre[i]->getHum_Max() << "]";
       }
 
-      QString tempo;
-      QString valeur = "('" + date + "', '" + tempo.setNum(co2) + "', '" + QString::number(fall) + "', '" + QString::number(temp) + "', '" + QString::number(hum) + "', '" + QString::number(oven) + "', '" + QString::number(alerte) + "', '" + QString::number(id) + "')";
-      qDebug() << "VALEUR ----------" << valeur;
-      livinglab->insertCapteurs(valeur);
+      // QUrl url("http://localhost/test.php");
+      // QNetworkAccessManager nam;
+      // QNetworkReply* reply = nam.get(QNetworkRequest(url));
+
+      QString date_s = date.toString(QString("yyyy-MM-dd hh:mm:ss"));
+
+      QString insert = "INSERT INTO `capteur`(`date_heure`, `co2`, `chute`, `temperature`, `humidite`, `four`, `detection_alerte`, `id_chambre`) VALUES ";
+      QString valeur = "('" + date_s + "', '" + QString::number(co2) + "', '" + QString::number(fall) + "', '" + QString::number(temp) + "', '" + QString::number(hum) + "', '" + QString::number(oven) + "', '" + QString::number(alerte) + "', '" + QString::number(id) + "')";
+
+      QString requete = insert + valeur;
+
+      qDebug() << "[INFO] : Demande d'insertion des données de la chambre n° :" << id;
+      livinglab->insertCapteurs(requete);
     }
   }
 }
 
 int Traitement::telephoneSeuil() {
-  bool success = true;
-  qDebug() << "Fonction telephoneSeuil()";
-  // Tableau qui contiendra toutes les valeurs des seuils recueillis
+  bool success = false;
 
   QString requete = "SELECT * FROM seuil_user, telephone WHERE seuil_user.numero = telephone.numero";
   QByteArray result = livinglab->requete(requete);
 
   QJsonDocument jsonDoc = QJsonDocument::fromBinaryData(result);
-  qDebug() << "json doc = " << jsonDoc;
   QJsonArray jsonArray = jsonDoc.array();
 
   for (int i = 0; i < jsonArray.count(); i++) {
@@ -175,8 +197,7 @@ int Traitement::telephoneSeuil() {
 
     for (int j = 0; j < vect_user.size(); j++) {
       if (vect_user[j]->getID() == champObject.value(QString{"numero"}).toString()) {
-        qDebug() << "VERIFICATION ID : " << vect_user[j]->getID() << " = " << champObject.value(QString{"numero"}).toString();
-        vect_user[j]->setAllSeuil(pas);
+        success = vect_user[j]->setAllSeuil(pas);
       }
     }
   }
@@ -186,12 +207,12 @@ int Traitement::telephoneSeuil() {
 
 int Traitement::openConnexionUser(QString numero, QString IP, int port) {
   QString url = "ws://" + IP + ":" + QString::number(port);
-  qDebug() << url;
 
   try {
     vect_user << new Telephone(QUrl(url), numero);
-    connect(vect_user.last(), SIGNAL(sendTextToProcess(QString, int, QString, QString)), this, SLOT(saveDataUserToProcess(QString, int, QString, QString)));
-
+    connect(vect_user.last(), SIGNAL(sendTextToProcess(QString, int, QString, QString)),
+     this, SLOT(saveDataUserToProcess(QString, int, QString, QString)));
+    qDebug() << "[INFO] : Connexion à l'adresse :" << url << ": établie !";
     return true;
   } catch(...) {
     return false;
@@ -201,9 +222,11 @@ int Traitement::openConnexionUser(QString numero, QString IP, int port) {
 void Traitement::saveDataUserToProcess(QString date, int pas, QString user, QString numero) {
   bool alerte = false;
 
-  QString tempo;
+  QString insert = "INSERT INTO `capteurUser` (`temps`, `pas`, `user`, `numero`) VALUES ";
   QString valeur = "('" + date + "', '" + QString::number(pas) + "', '" + user + "', '" + numero + "')";
-  qDebug() << "VALEUR ----------" << valeur;
-  livinglab->insertCapteursUser(valeur);
 
+  QString requete = insert + valeur;
+
+  qDebug() << "[INFO] : Demande d'insertion des données du telephone n° :" << numero;
+  livinglab->insertCapteurs(requete);
 }

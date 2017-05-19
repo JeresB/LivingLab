@@ -17,13 +17,14 @@ public:
     int getTemp_Min();
     int getHum_Max();
     int getHum_Min();
+    QString getFour();
 
     // SETTERS
-    void setAllSeuil(int hmin, int hmax, int tmax, int tmin, int cm, int ch, QString f);
+    int setAllSeuil(int hmin, int hmax, int tmax, int tmin, int cm, int ch, QString f);
 
 Q_SIGNALS:
     void closed();
-    void sendTextToProcess(QString, int, bool, float, float, bool, int);
+    void sendTextToProcess(QDateTime, int, bool, float, float, bool, int);
 
 private Q_SLOTS:
     void onConnected();
@@ -33,8 +34,8 @@ public Q_SLOTS:
 
 private:
     QWebSocket m_Chambre;
-    QUrl m_url;
-    int m_id_chambre;
+    QUrl c_url;
+    int c_id_chambre;
 
     int humiditymin     = 0;
     int humiditymax     = 0;

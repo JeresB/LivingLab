@@ -12,7 +12,7 @@ public:
     // GETTERS
     QString getID();
     // SETTERS
-    void setAllSeuil(QString pas);
+    int setAllSeuil(QString pas);
 
 Q_SIGNALS:
     void sendTextToProcess(QString, int, QString, QString);

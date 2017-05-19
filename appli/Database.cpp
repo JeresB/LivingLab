@@ -46,26 +46,11 @@ QByteArray jsonDocBinaire;
 }
 //! [fonction public requete]
 
-int Database::insertCapteurs( QString values) {
+
+void Database::insertCapteurs( QString requete) {
   QSqlQuery query;
+  qDebug() << "[REQUETE] :" << requete;
 
-  QString insert = "INSERT INTO `capteur`(`date_heure`, `co2`, `chute`, `temperature`, `humidite`, `four`, `detection_alerte`, `id_chambre`) VALUES ";
-  QString requete = insert + values;
-
-  qDebug() << requete;
-  if(query.exec(requete)) {
-    qDebug() << "La requete à bien été effectuée !!!";
-  } else qDebug() << "Une erreur s'est produite. :(";
-}
-
-int Database::insertCapteursUser( QString values) {
-  QSqlQuery query;
-
-  QString insert = "INSERT INTO `capteurUser` (`temps`, `pas`, `user`, `numero`) VALUES ";
-  QString requete = insert + values;
-
-  qDebug() << requete;
-  if(query.exec(requete)) {
-    qDebug() << "La requete à bien été effectuée !!!";
-  } else qDebug() << "Une erreur s'est produite. :(";
+  if(query.exec(requete)) qDebug() << "[INFO] : Requete d'insertion dans la BDD : SUCCESS";
+  else qWarning() << "[WARNING] : Requete d'insertion dans la BDD : FAILED";
 }
