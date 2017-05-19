@@ -15,6 +15,8 @@ class Database : public QObject {
 public:
     explicit Database(QObject *parent = Q_NULLPTR);
     QByteArray requete(const QString & sqlquery);
+    int insertCapteurs(QString values);
+    int insertCapteursUser(QString values);
 
 Q_SIGNALS:
 
