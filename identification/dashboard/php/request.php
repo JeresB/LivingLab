@@ -1,4 +1,5 @@
 <?php
+	session_start();
 	header("Content-Type: text/plain");
 
 	require_once('database.php');
@@ -19,7 +20,7 @@
 		if ($db != false) {
 			$request_explode = explode('/', $request);
 			$requestType = $_SERVER['REQUEST_METHOD'];
-			if($request_explode[0] == 'listCapteur') {
+			if($request_explode[0] == 'Capteur') {
 				$data = NULL;
 
 				$id = $request_explode[1];

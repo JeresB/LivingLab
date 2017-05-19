@@ -56,8 +56,9 @@ CREATE TABLE seuil(
 #------------------------------------------------------------
 
 CREATE TABLE chambre(
-        id_chambre int (11) Auto_increment  NOT NULL ,
-        ip_chambre Varchar (25) ,
+        id_chambre   int (11) Auto_increment  NOT NULL ,
+        ip_chambre   Varchar (25) ,
+        port_chambre Integer ,
         PRIMARY KEY (id_chambre )
 )ENGINE=InnoDB;
 
@@ -69,6 +70,7 @@ CREATE TABLE chambre(
 CREATE TABLE contact(
         login_email Varchar (25) NOT NULL ,
         full_name   Varchar (25) ,
+        password    Varchar (25) ,
         PRIMARY KEY (login_email )
 )ENGINE=InnoDB;
 
@@ -78,11 +80,11 @@ CREATE TABLE contact(
 #------------------------------------------------------------
 
 CREATE TABLE capteurUser(
-        temps            Datetime NOT NULL ,
-        pas              Integer ,
-        user             Varchar (25) ,
-        login_email_user Varchar (25) NOT NULL ,
-        PRIMARY KEY (temps ,login_email_user )
+        temps  Datetime NOT NULL ,
+        pas    Integer ,
+        user   Varchar (25) ,
+        numero Varchar (25) NOT NULL ,
+        PRIMARY KEY (temps ,numero )
 )ENGINE=InnoDB;
 
 
@@ -92,9 +94,22 @@ CREATE TABLE capteurUser(
 
 CREATE TABLE telephone(
         numero           Varchar (25) NOT NULL ,
+        ip_telephone     Varchar (25) ,
+        port_telephone   Integer ,
         login_email_user Varchar (25) ,
-        login_email      Varchar (25) ,
         PRIMARY KEY (numero )
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: seuil_user
+#------------------------------------------------------------
+
+CREATE TABLE seuil_user(
+        id_seuil_user int (11) Auto_increment  NOT NULL ,
+        deplacement   Datetime ,
+        numero        Varchar (25) NOT NULL ,
+        PRIMARY KEY (id_seuil_user ,numero )
 )ENGINE=InnoDB;
 
 
@@ -108,11 +123,24 @@ CREATE TABLE utilisateur_contact(
         PRIMARY KEY (login_email ,login_email_user )
 )ENGINE=InnoDB;
 
+
+#------------------------------------------------------------
+# Table: contact_chambre
+#------------------------------------------------------------
+
+CREATE TABLE contact_chambre(
+        login_email Varchar (25) NOT NULL ,
+        id_chambre  Int NOT NULL ,
+        PRIMARY KEY (login_email ,id_chambre )
+)ENGINE=InnoDB;
+
 ALTER TABLE Utilisateur ADD CONSTRAINT FK_Utilisateur_id_chambre FOREIGN KEY (id_chambre) REFERENCES chambre(id_chambre);
 ALTER TABLE capteur ADD CONSTRAINT FK_capteur_id_chambre FOREIGN KEY (id_chambre) REFERENCES chambre(id_chambre);
 ALTER TABLE seuil ADD CONSTRAINT FK_seuil_id_chambre FOREIGN KEY (id_chambre) REFERENCES chambre(id_chambre);
-ALTER TABLE capteurUser ADD CONSTRAINT FK_capteurUser_login_email_user FOREIGN KEY (login_email_user) REFERENCES Utilisateur(login_email_user);
+ALTER TABLE capteurUser ADD CONSTRAINT FK_capteurUser_numero FOREIGN KEY (numero) REFERENCES telephone(numero);
 ALTER TABLE telephone ADD CONSTRAINT FK_telephone_login_email_user FOREIGN KEY (login_email_user) REFERENCES Utilisateur(login_email_user);
-ALTER TABLE telephone ADD CONSTRAINT FK_telephone_login_email FOREIGN KEY (login_email) REFERENCES contact(login_email);
+ALTER TABLE seuil_user ADD CONSTRAINT FK_seuil_user_numero FOREIGN KEY (numero) REFERENCES telephone(numero);
 ALTER TABLE utilisateur_contact ADD CONSTRAINT FK_utilisateur_contact_login_email FOREIGN KEY (login_email) REFERENCES contact(login_email);
 ALTER TABLE utilisateur_contact ADD CONSTRAINT FK_utilisateur_contact_login_email_user FOREIGN KEY (login_email_user) REFERENCES Utilisateur(login_email_user);
+ALTER TABLE contact_chambre ADD CONSTRAINT FK_contact_chambre_login_email FOREIGN KEY (login_email) REFERENCES contact(login_email);
+ALTER TABLE contact_chambre ADD CONSTRAINT FK_contact_chambre_id_chambre FOREIGN KEY (id_chambre) REFERENCES chambre(id_chambre);
