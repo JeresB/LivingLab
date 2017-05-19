@@ -6,6 +6,7 @@
 #include "Database.hpp"
 #include "Chambre.hpp"
 #include "Telephone.hpp"
+#include "smtp.hpp"
 
 class Traitement : public QObject {
   Q_OBJECT
@@ -20,13 +21,15 @@ public:
 Q_SIGNALS:
 
 private Q_SLOTS:
-  void saveDataRoomToProcess(QString, int, bool, float, float, bool, int);
+  void saveDataRoomToProcess(QDateTime, int, bool, float, float, bool, int);
   void saveDataUserToProcess(QString, int, QString, QString);
 
 private:
   Database *livinglab;
   QVector<Chambre *> vect_chambre;
   QVector<Telephone *> vect_user;
+
+  QVector<QTime> vect_four_allume;
 };
 
 #endif // TRAITEMENT_H
