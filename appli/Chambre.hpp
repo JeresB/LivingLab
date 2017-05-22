@@ -23,11 +23,11 @@ public:
     int setAllSeuil(int hmin, int hmax, int tmax, int tmin, int cm, int ch, QString f);
 
 Q_SIGNALS:
-    void closed();
-    void sendTextToProcess(QDateTime, int, bool, float, float, bool, int);
+    void sendTextToProcess(QDateTime, int, bool, float, float, bool, QString, int);
 
 private Q_SLOTS:
     void onConnected();
+    void closed();
 
 public Q_SLOTS:
   void onTextMessageReceived(QString message);

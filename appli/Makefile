@@ -359,6 +359,7 @@ moc_Telephone.cpp: Telephone.hpp
 moc_Traitement.cpp: Database.hpp \
 		Chambre.hpp \
 		Telephone.hpp \
+		smtp.hpp \
 		Traitement.hpp
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/var/www/html/LivingLab/appli -I/var/www/html/LivingLab/appli -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWebSockets -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include Traitement.hpp -o moc_Traitement.cpp
 
@@ -383,7 +384,8 @@ Database.o: Database.cpp Database.hpp
 main.o: main.cpp Traitement.hpp \
 		Database.hpp \
 		Chambre.hpp \
-		Telephone.hpp
+		Telephone.hpp \
+		smtp.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 smtp.o: smtp.cpp smtp.hpp
@@ -395,7 +397,8 @@ Telephone.o: Telephone.cpp Telephone.hpp
 Traitement.o: Traitement.cpp Traitement.hpp \
 		Database.hpp \
 		Chambre.hpp \
-		Telephone.hpp
+		Telephone.hpp \
+		smtp.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Traitement.o Traitement.cpp
 
 moc_Chambre.o: moc_Chambre.cpp 

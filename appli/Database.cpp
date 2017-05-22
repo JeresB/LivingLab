@@ -13,9 +13,9 @@ Database::Database(QObject *parent) : QObject(parent) {
   db.setDatabaseName("livinglab");
 
   if(db.open()) {
-    qDebug() << "[INFO] : Connexion vers" << db.hostName() << ": SUCCESS";
+    qDebug() << "\033[1;42;37m[INFO] : Connexion vers" << db.hostName() << ": SUCCESS\033[0;0m";
   } else {
-    qWarning() << "[WARNING] : Connexion vers" << db.hostName() << ": FAILED";
+    qWarning() << "\033[1;43;37m[WARNING] : Connexion vers" << db.hostName() << ": FAILED\033[0;0m";
   }
 }
 //! [constructor]
@@ -49,8 +49,8 @@ QByteArray jsonDocBinaire;
 
 void Database::insertCapteurs( QString requete) {
   QSqlQuery query;
-  qDebug() << "[REQUETE] :" << requete;
+  qDebug() << "\033[1;45;37m[REQUETE] :" << requete << "\033[0;0m";
 
-  if(query.exec(requete)) qDebug() << "[INFO] : Requete d'insertion dans la BDD : SUCCESS";
-  else qWarning() << "[WARNING] : Requete d'insertion dans la BDD : FAILED";
+  if(query.exec(requete)) qDebug() << "\033[1;42;37m[INFO] : Requete d'insertion dans la BDD : SUCCESS\033[0;0m";
+  else qWarning() << "\033[1;43;37m[WARNING] : Requete d'insertion dans la BDD : FAILED\033[0;0m";
 }

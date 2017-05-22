@@ -20,10 +20,18 @@ void Chambre::onConnected() {
 }
 //! [onConnected]
 
+// [if Disconnected]
+void Chambre::closed() {
+  qDebug() << "\033[1;41;37m[ERROR] : Connexion avec l'adresse :" << c_url << "perdue !!!\033[0;0m";
+  m_Chambre.open(QUrl(c_url));
+  qDebug() << "\033[1;42;37m[INFO] : Reconnexion à l'adresse :" << c_url << ": SUCCESS\033[0;0m";
+}
+//! [if Disconnected]
+
 // [onTextMessageReceived]
 void Chambre::onTextMessageReceived(QString message) {
   bool ok;
-
+  // qDebug() << "[MESSAGE] : " << message;
   // Récupération des données dans un QJsonDocument
   QJsonDocument donnees = QJsonDocument::fromJson(message.toUtf8());
   // Conversion du QJsonDocument en QJsonObject
@@ -60,7 +68,7 @@ void Chambre::onTextMessageReceived(QString message) {
   bool oven = JsonObject.value(QString{"OVEN"}).toBool();
 
   // Emission des données à traiter
-  emit sendTextToProcess(timestamp, co2, fall, temp, hum, oven, c_id_chambre);
+  emit sendTextToProcess(timestamp, co2, fall, temp, hum, oven, user, c_id_chambre);
 }
 //! [onTextMessageReceived]
 

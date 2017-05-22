@@ -11,14 +11,15 @@ public:
 
     // GETTERS
     QString getID();
+    QString getPas();
     // SETTERS
     int setAllSeuil(QString pas);
 
 Q_SIGNALS:
-    void sendTextToProcess(QString, int, QString, QString);
+    void sendTextToProcess(QDateTime, int, QString, QString);
 
 private Q_SLOTS:
-    void closed(){};
+    void closed();
     void onConnected();
 
 public Q_SLOTS:

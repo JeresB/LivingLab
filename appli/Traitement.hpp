@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QByteArray>
+#include <cmath>
 #include "Database.hpp"
 #include "Chambre.hpp"
 #include "Telephone.hpp"
@@ -21,15 +22,23 @@ public:
 Q_SIGNALS:
 
 private Q_SLOTS:
-  void saveDataRoomToProcess(QDateTime, int, bool, float, float, bool, int);
-  void saveDataUserToProcess(QString, int, QString, QString);
+  void saveDataRoomToProcess(QDateTime, int, bool, float, float, bool, QString, int);
+  void saveDataUserToProcess(QDateTime, int, QString, QString);
 
 private:
   Database *livinglab;
   QVector<Chambre *> vect_chambre;
   QVector<Telephone *> vect_user;
 
+  QVector<int> temperature_save;
+
   QVector<QTime> vect_four_allume;
+  QVector<QTime> vect_deplacement;
+
+  QTime matin;
+  QTime soir;
+
+  int diff_temp = 3;
 };
 
 #endif // TRAITEMENT_H

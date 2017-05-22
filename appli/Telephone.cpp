@@ -20,6 +20,14 @@ void Telephone::onConnected() {
 }
 //! [onConnected]
 
+// [if Disconnected]
+void Telephone::closed() {
+  qDebug() << "\033[1;41;37m[ERROR] : Connexion avec l'adresse :" << m_url << "perdue !!!\033[0;0m";
+  m_Telephone.open(QUrl(m_url));
+  qDebug() << "\033[1;42;37m[INFO] : Reconnexion à l'adresse :" << m_url << ": SUCCESS\033[0;0m";
+}
+//! [if Disconnected]
+
 // [onTextMessageReceived]
 void Telephone::onTextMessageReceived(QString message) {
   bool ok;
@@ -35,16 +43,13 @@ void Telephone::onTextMessageReceived(QString message) {
   QDateTime timestamp;
   timestamp.setTime_t(unixTime);
 
-  QString date = timestamp.toString(QString("yyyy-MM-dd hh:mm:ss"));
+  //QString date = timestamp.toString(QString("yyyy-MM-dd hh:mm:ss"));
 
 
-  //double pas_d = JsonObject.value(QString{"STEP"}).toDouble();
-  //QString pas_s = JsonObject.value(QString{"STEP"}).toString();
   int pas = JsonObject.value(QString{"STEP"}).toInt();
-  //qDebug() << "Pas de l'utilisateur -> int :" << pas << "string :" << pas_s << "double :" << pas_d;
   QString user = JsonObject.value(QString{"USER"}).toString();
 
-  emit sendTextToProcess(date, pas, user, m_numero);
+  emit sendTextToProcess(timestamp, pas, user, m_numero);
 }
 //! [onTextMessageReceived]
 
@@ -52,6 +57,11 @@ void Telephone::onTextMessageReceived(QString message) {
 QString Telephone::getID() {
   return m_numero;
 }
+
+QString Telephone::getPas() {
+  return t_pas;
+}
+
 //! [GETTERS]
 
 // [SETTERS]
