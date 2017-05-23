@@ -162,7 +162,7 @@ void Traitement::saveDataRoomToProcess(QDateTime date, int co2, bool fall, float
         temperature_save.removeFirst();
         // comparer premier et dernier
         int diff = temperature_save.last() - temperature_save.first();
-        if(diff > diff_temp) {
+        if(diff >= diff_temp) {
           alerte = "La température a évoluée dangereusement pendant les 5 dernières minutes !!!";
           qWarning() << "\033[1;43;37m[WARNING] : La température a augmentée de " << diff << "°C sur les 5 dernières minutes\033[0;0m";
         } else {
