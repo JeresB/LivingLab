@@ -7,10 +7,20 @@ QT_USE_NAMESPACE
 Database::Database(QObject *parent) : QObject(parent) {
   db = QSqlDatabase::addDatabase("QMYSQL");
 
-  db.setHostName("localhost");
-  db.setUserName("livinglab");
-  db.setPassword("livinglab");
-  db.setDatabaseName("livinglab");
+  QFile fichier("bdd.conf");
+  fichier.open(QIODevice::ReadOnly | QIODevice::Text);
+  QTextStream flux(&fichier);
+
+  QStringList ligne;
+
+  while(! flux.atEnd()) {
+    ligne << flux.readLine();
+  }
+
+  db.setHostName(ligne[0]);
+  db.setUserName(ligne[1]);
+  db.setPassword(ligne[2]);
+  db.setDatabaseName(ligne[3]);
 
   if(db.open()) {
     qDebug() << "\033[1;42;37m[INFO] : Connexion vers" << db.hostName() << ": SUCCESS\033[0;0m";

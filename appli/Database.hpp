@@ -9,6 +9,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QByteArray>
+#include <QFile>
 
 class Database : public QObject {
     Q_OBJECT

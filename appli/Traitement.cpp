@@ -8,13 +8,9 @@ Traitement::Traitement(QObject *parent) : QObject(parent) {
   // Création de la connexion à la base de données
   livinglab = new Database;
 
-  //QTextStream qout(stdout);
-  //qout << "\033[0;32mSeqLs Constructor\033[0;0m\n";
-
   matin = QTime(7, 0);
   soir = QTime(23, 0);
 
-  qDebug() << "Matin :" << matin << "Soir :" << soir;
 
   // Fonction de récupération des adresses IP des pièces
   if (List("room")) qDebug() << "\033[1;42;37m[INFO] : Récupération de la liste des chambres : SUCCESS\033[0;0m";
@@ -119,7 +115,7 @@ int Traitement::openConnexionChambre(int id, QString IP, int port) {
 }
 
 void Traitement::saveDataRoomToProcess(QDateTime date, int co2, bool fall, float temp, float hum, bool oven, QString presence, int id) {
-  bool alerte = false;
+  QString alerte = "false";
 
 
   for (int i = 0; i < vect_chambre.size(); i++) {
@@ -136,7 +132,7 @@ void Traitement::saveDataRoomToProcess(QDateTime date, int co2, bool fall, float
       QString fa = vect_four_allume[i].toString(QString("hh:mm:ss"));
       QString sf = seuil_four.toString(QString("hh:mm:ss"));
       if (vect_four_allume[i] > seuil_four) {
-        alerte = true;
+        alerte = "Four allumé depuis trop longtemps, veuillez l'éteindre !!!";
         qWarning() << "\033[1;43;37m[WARNING] : Four allumé depuis :" << fa << " Temps de fonctionnement réglementaire :" << sf << "\033[0;0m";
       } else qDebug() << "\033[1;42;37m[INFO] : Four allumé depuis :" << fa << " Temps de fonctionnement réglementaire :" << sf << "\033[0;0m";
 
@@ -145,18 +141,18 @@ void Traitement::saveDataRoomToProcess(QDateTime date, int co2, bool fall, float
       if (co2 > vect_chambre[i]->getCO2_M()) {
         if (co2 > vect_chambre[i]->getCO2_H()) {
           // alerte SMS, le co2 dépasse le seuil haut
-          alerte = true;
+          alerte = "Le co2 a atteint un niveau critique !!!";
           qWarning() << "\033[1;41;37m[DANGER] : Le co2 a dépassé le seuil dangereux :" << vect_chambre[i]->getCO2_H() << "il vaut actuellement : " << co2 << "ppm\033[0;0m";
         } else {
           // alerte mail, le co2 dépasse le seuil moyen
-          alerte = true;
+          alerte = "Le co2 a atteint un niveau dangereux !!!";
           qWarning() << "\033[1;43;37m[WARNING] : Le co2 a dépassé le seuil d'avertissement :" << vect_chambre[i]->getCO2_M() << "il vaut actuellement : " << co2 << "ppm\033[0;0m";
         }
       }
 
       if (fall) {
         // alerte l'utilsateur est tombé
-        alerte = true;
+        alerte = "L'utilisateur est tombé !!!";
         qWarning() << "[DANGER] : L'utilisateur est tombé !!!";
       }
 
@@ -167,7 +163,7 @@ void Traitement::saveDataRoomToProcess(QDateTime date, int co2, bool fall, float
         // comparer premier et dernier
         int diff = temperature_save.last() - temperature_save.first();
         if(diff > diff_temp) {
-          alerte = true;
+          alerte = "La température a évoluée dangereusement pendant les 5 dernières minutes !!!";
           qWarning() << "\033[1;43;37m[WARNING] : La température a augmentée de " << diff << "°C sur les 5 dernières minutes\033[0;0m";
         } else {
           qDebug() << "\033[1;42;37m[INFO] : La température a évoluée de " << diff << "°C sur les 5 dernières minutes\033[0;0m";
@@ -176,15 +172,27 @@ void Traitement::saveDataRoomToProcess(QDateTime date, int co2, bool fall, float
         temperature_save << temp;
       }
 
-      if (temp > vect_chambre[i]->getTemp_Max() || temp < vect_chambre[i]->getTemp_Min()) {
+      if (temp > vect_chambre[i]->getTemp_Max()) {
         // alerte la temperature ne respecte pas l'interval demandé
-        alerte = true;
+        alerte = "La température est trop élevée !!!";
         qWarning() << "\033[1;43;37m[WARNING] : La température est de :" << temp << ", elle a dépassée l'interval autorisé [" << vect_chambre[i]->getTemp_Min() << ", " << vect_chambre[i]->getTemp_Max() << "]\033[0;0m";
       }
 
-      if (hum > vect_chambre[i]->getHum_Max() || hum < vect_chambre[i]->getHum_Min()) {
+      if (temp < vect_chambre[i]->getTemp_Min()) {
+        // alerte la temperature ne respecte pas l'interval demandé
+        alerte = "La température est trop basse !!!";
+        qWarning() << "\033[1;43;37m[WARNING] : La température est de :" << temp << ", elle a dépassée l'interval autorisé [" << vect_chambre[i]->getTemp_Min() << ", " << vect_chambre[i]->getTemp_Max() << "]\033[0;0m";
+      }
+
+      if (hum > vect_chambre[i]->getHum_Max()) {
         // alerte l'humidité ne respecte pas l'interval demandé
-        alerte = true;
+        alerte = "L'humidité à dépassée le seuil autorisé !!!";
+        qWarning() << "\033[1;43;37m[WARNING] : L'humidité est de :" << hum << ", elle a dépassée l'interval autorisé [" << vect_chambre[i]->getHum_Min() << ", " << vect_chambre[i]->getHum_Max() << "]\033[0;0m";
+      }
+
+      if (hum < vect_chambre[i]->getHum_Min()) {
+        // alerte l'humidité ne respecte pas l'interval demandé
+        alerte = "L'humidité n'atteint pas le niveau minimum demandé !!!";
         qWarning() << "\033[1;43;37m[WARNING] : L'humidité est de :" << hum << ", elle a dépassée l'interval autorisé [" << vect_chambre[i]->getHum_Min() << ", " << vect_chambre[i]->getHum_Max() << "]\033[0;0m";
       }
 
@@ -195,7 +203,7 @@ void Traitement::saveDataRoomToProcess(QDateTime date, int co2, bool fall, float
       QString date_s = date.toString(QString("yyyy-MM-dd hh:mm:ss"));
 
       QString insert = "INSERT INTO `capteur`(`date_heure`, `co2`, `chute`, `temperature`, `humidite`, `four`, `presence`, `detection_alerte`, `id_chambre`) VALUES ";
-      QString valeur = "('" + date_s + "', '" + QString::number(co2) + "', '" + QString::number(fall) + "', '" + QString::number(temp) + "', '" + QString::number(hum) + "', '" + QString::number(oven) + "', '" + presence + "', '" + QString::number(alerte) + "', '" + QString::number(id) + "')";
+      QString valeur = "('" + date_s + "', '" + QString::number(co2) + "', '" + QString::number(fall) + "', '" + QString::number(temp) + "', '" + QString::number(hum) + "', '" + QString::number(oven) + "', '" + presence + "', '" + alerte + "', '" + QString::number(id) + "')";
 
       QString requete = insert + valeur;
 
@@ -246,7 +254,7 @@ int Traitement::openConnexionUser(QString numero, QString IP, int port) {
 }
 
 void Traitement::saveDataUserToProcess(QDateTime timestamp, int pas, QString user, QString numero) {
-  bool alerte = false;
+  QString alerte = "false";
 
   QString date = timestamp.toString(QString("yyyy-MM-dd hh:mm:ss"));
   QString heure_s = timestamp.toString(QString("hh:mm:ss"));
@@ -268,7 +276,7 @@ void Traitement::saveDataUserToProcess(QDateTime timestamp, int pas, QString use
         QString move = vect_deplacement[i].toString(QString("hh:mm:ss"));
         QString sp = seuil_pas.toString(QString("hh:mm:ss"));
         if (vect_deplacement[i] > seuil_pas) {
-          alerte = true;
+          alerte = "L'utilisateur est immobile depuis trop longtemps !!!";
           qWarning() << "\033[1;43;37m[WARNING] : L'utilisateur n'a pas bougé depuis :" << move << "heures. Temps immobile maximum autorisé :" << sp << "\033[0;0m";
         } else qDebug() << "\033[1;42;37m[INFO] : L'utilisateur n'a pas bougé depuis :" << move << "heures. Temps immobile maximum autorisé :" << sp << "\033[0;0m";
 
@@ -277,7 +285,7 @@ void Traitement::saveDataUserToProcess(QDateTime timestamp, int pas, QString use
   }
 
   QString insert = "INSERT INTO `capteurUser` (`temps`, `pas`, `user`, `detection_alerte_user`, `numero`) VALUES ";
-  QString valeur = "('" + date + "', '" + QString::number(pas) + "', '" + user + "', '" + QString::number(alerte) + "', '" + numero + "')";
+  QString valeur = "('" + date + "', '" + QString::number(pas) + "', '" + user + "', '" + alerte + "', '" + numero + "')";
 
   QString requete = insert + valeur;
 
