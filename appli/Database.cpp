@@ -1,9 +1,23 @@
+/**
+ * \file Database.cpp
+ * \brief  Connexion avec la base de données
+ * \version 1
+ * \date 24 mai 2017
+ * \author {Jeremy B. & Théo D.}
+ */
+
 #include "Database.hpp"
 #include <QDebug>
 
 QT_USE_NAMESPACE
 
-// [constructor]
+/**
+ *  \brief Constructeur
+ *
+ *  Constructeur de la classe Database
+ *
+ *  \param parent(QObject*) : Possibilité de donner le QObject parent
+ */
 Database::Database(QObject *parent) : QObject(parent) {
   db = QSqlDatabase::addDatabase("QMYSQL");
 
@@ -28,9 +42,14 @@ Database::Database(QObject *parent) : QObject(parent) {
     qWarning() << "\033[1;43;37m[WARNING] : Connexion vers" << db.hostName() << ": FAILED\033[0;0m";
   }
 }
-//! [constructor]
 
-// [fonction public requete]
+/**
+ *  \brief Requete
+ *
+ *  Méthode requete : permet de faire des requetes de type SELECT
+ *
+ *  \param sqlquery(QString &) : requete de type select
+ */
 QByteArray Database::requete(const QString & sqlquery) {
 QSqlQuery query;
 QByteArray jsonDocBinaire;
@@ -54,9 +73,14 @@ QByteArray jsonDocBinaire;
   //qDebug() << json.toJson() << "----------" << json;
   return json.toBinaryData();
 }
-//! [fonction public requete]
 
-
+/**
+ *  \brief insertCapteurs
+ *
+ *  Méthode insertCapteurs : permet de faire des requetes de type INSERT INTO
+ *
+ *  \param requete(QString) : requete de type insert into
+ */
 void Database::insertCapteurs( QString requete) {
   QSqlQuery query;
   qDebug() << "\033[1;45;37m[REQUETE] :" << requete << "\033[0;0m";

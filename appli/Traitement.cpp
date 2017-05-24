@@ -1,9 +1,23 @@
+/**
+ * \file Traitement.cpp
+ * \brief  Ce fichier permet de démarrer les connexions websockets
+ *         Traiter les données reçues par les websockets
+ * \version 1
+ * \date 24 mai 2017
+ * \author {Jeremy B. & Théo D.}
+ */
 #include "Traitement.hpp"
 #include <QDebug>
 
 QT_USE_NAMESPACE
 
-// [constructor]
+/**
+ * \fn Constructeur
+ * \brief  Permet de démarrer la connexion à la BDD
+ *         Récupère les adresses IP et ouvre les connexions websockets
+ *         Récupère les seuils correspondant à chaque chambre
+ * \param[in, out] parent(QObject*) : Possibilité de donner en argument le QObject parent en pointeur
+ */
 Traitement::Traitement(QObject *parent) : QObject(parent) {
   // Création de la connexion à la base de données
   livinglab = new Database;
@@ -27,8 +41,20 @@ Traitement::Traitement(QObject *parent) : QObject(parent) {
   else qWarning() << "\033[1;43;37m[WARNING] : Récupération des seuils des telephones : FAILED\033[0;0m";
 
 }
-//! [constructor]
+/*!
+ * \brief Constructeur
+ */
 
+/**
+ * \fn List
+ * \brief  Récupère les adresses IP
+ *         Appelle les fonctions openConnexionChambre ou openConnexionUser
+ *         En fonctions du paramètre d'entrée
+ *
+ * \param[in] type(QString) : 2 possibilités : room ou user
+ * \return false si la requete ou l'ouverture des websockets à échouer
+ *         true si l'ouverture des websockets est un succès
+ */
 int Traitement::List(QString type) {
   bool success = false;
   QByteArray result;
@@ -64,6 +90,14 @@ int Traitement::List(QString type) {
   return success;
 }
 
+/**
+ * \fn roomSeuil
+ * \brief  Récupère les seuils des chambres
+ *         Enregistre les seuils dans les attributs de la chambre correspondante avec la méthode setAllSeuil
+ *
+ * \return false si l'enregistrement des seuils à échouer
+ *         true si les seuils ont bien été enregistrer
+ */
 int Traitement::roomSeuil() {
   bool success = false;
 
@@ -98,6 +132,17 @@ int Traitement::roomSeuil() {
   return success;
 }
 
+/**
+ * \fn openConnexionChambre
+ * \brief  Ouvre une connexion websocket lié à une chambre
+ *
+ * \param[in] id(int) : id de la chambre
+ * \param[in] IP(QString) : IP de la chambre
+ * \param[in] port(int) : port de la chambre
+ *
+ * \return false si l'ouverture websocket de la chambre à échouer
+ *         true si l'ouverture websocket est un succès
+ */
 int Traitement::openConnexionChambre(int id, QString IP, int port) {
   QString url = "ws://" + IP + ":" + QString::number(port);
 
@@ -114,8 +159,26 @@ int Traitement::openConnexionChambre(int id, QString IP, int port) {
   }
 }
 
+/**
+ * \fn saveDataRoomToProcess
+ * \brief  SLOT qui récupère les données émisent depuis les websockets chambres ouvertes
+ *         Traite les données reçues
+ *
+ * Toutes les données reçues
+ * \param[in] date(QDateTime) : date des données
+ * \param[in] co2(int) : CO2 présent dans la chambre
+ * \param[in] fall(bool) : Chute de l'utilisateur
+ * \param[in] temp(float) : Température de la chambre
+ * \param[in] hum(float) : Humidité de la chambre
+ * \param[in] oven(bool) : Four allumé ou éteint
+ * \param[in] presence(QString) : Nom de l'utilisateur present dans la chambre ou chaine vide
+ * \param[in] id(int) : identifiant de la chambre
+ *
+ * \return Appel de la méthode insertCapteurs de la classe Database
+ *         On lui envoie en paramètre la requete d'insertion contenant les données reçues
+ */
 void Traitement::saveDataRoomToProcess(QDateTime date, int co2, bool fall, float temp, float hum, bool oven, QString presence, int id) {
-  QString alerte = "false";
+  QString alerte = "";
 
 
   for (int i = 0; i < vect_chambre.size(); i++) {
@@ -132,7 +195,7 @@ void Traitement::saveDataRoomToProcess(QDateTime date, int co2, bool fall, float
       QString fa = vect_four_allume[i].toString(QString("hh:mm:ss"));
       QString sf = seuil_four.toString(QString("hh:mm:ss"));
       if (vect_four_allume[i] > seuil_four) {
-        alerte = "Four allumé depuis trop longtemps, veuillez l'éteindre !!!";
+        alerte += "Four allumé depuis trop longtemps, veuillez l'éteindre !!! ";
         qWarning() << "\033[1;43;37m[WARNING] : Four allumé depuis :" << fa << " Temps de fonctionnement réglementaire :" << sf << "\033[0;0m";
       } else qDebug() << "\033[1;42;37m[INFO] : Four allumé depuis :" << fa << " Temps de fonctionnement réglementaire :" << sf << "\033[0;0m";
 
@@ -141,18 +204,18 @@ void Traitement::saveDataRoomToProcess(QDateTime date, int co2, bool fall, float
       if (co2 > vect_chambre[i]->getCO2_M()) {
         if (co2 > vect_chambre[i]->getCO2_H()) {
           // alerte SMS, le co2 dépasse le seuil haut
-          alerte = "Le co2 a atteint un niveau critique !!!";
+          alerte += "Le co2 a atteint un niveau critique !!! ";
           qWarning() << "\033[1;41;37m[DANGER] : Le co2 a dépassé le seuil dangereux :" << vect_chambre[i]->getCO2_H() << "il vaut actuellement : " << co2 << "ppm\033[0;0m";
         } else {
           // alerte mail, le co2 dépasse le seuil moyen
-          alerte = "Le co2 a atteint un niveau dangereux !!!";
+          alerte += "Le co2 a atteint un niveau dangereux !!! ";
           qWarning() << "\033[1;43;37m[WARNING] : Le co2 a dépassé le seuil d'avertissement :" << vect_chambre[i]->getCO2_M() << "il vaut actuellement : " << co2 << "ppm\033[0;0m";
         }
       }
 
       if (fall) {
         // alerte l'utilsateur est tombé
-        alerte = "L'utilisateur est tombé !!!";
+        alerte += "L'utilisateur est tombé !!! ";
         qWarning() << "[DANGER] : L'utilisateur est tombé !!!";
       }
 
@@ -163,7 +226,7 @@ void Traitement::saveDataRoomToProcess(QDateTime date, int co2, bool fall, float
         // comparer premier et dernier
         int diff = temperature_save.last() - temperature_save.first();
         if(diff >= diff_temp) {
-          alerte = "La température a évoluée dangereusement pendant les 5 dernières minutes !!!";
+          alerte += "La température a évoluée dangereusement pendant les 5 dernières minutes !!! ";
           qWarning() << "\033[1;43;37m[WARNING] : La température a augmentée de " << diff << "°C sur les 5 dernières minutes\033[0;0m";
         } else {
           qDebug() << "\033[1;42;37m[INFO] : La température a évoluée de " << diff << "°C sur les 5 dernières minutes\033[0;0m";
@@ -174,25 +237,25 @@ void Traitement::saveDataRoomToProcess(QDateTime date, int co2, bool fall, float
 
       if (temp > vect_chambre[i]->getTemp_Max()) {
         // alerte la temperature ne respecte pas l'interval demandé
-        alerte = "La température est trop élevée !!!";
+        alerte += "La température est trop élevée !!! ";
         qWarning() << "\033[1;43;37m[WARNING] : La température est de :" << temp << ", elle a dépassée l'interval autorisé [" << vect_chambre[i]->getTemp_Min() << ", " << vect_chambre[i]->getTemp_Max() << "]\033[0;0m";
       }
 
       if (temp < vect_chambre[i]->getTemp_Min()) {
         // alerte la temperature ne respecte pas l'interval demandé
-        alerte = "La température est trop basse !!!";
+        alerte += "La température est trop basse !!! ";
         qWarning() << "\033[1;43;37m[WARNING] : La température est de :" << temp << ", elle a dépassée l'interval autorisé [" << vect_chambre[i]->getTemp_Min() << ", " << vect_chambre[i]->getTemp_Max() << "]\033[0;0m";
       }
 
       if (hum > vect_chambre[i]->getHum_Max()) {
         // alerte l'humidité ne respecte pas l'interval demandé
-        alerte = "L'humidité à dépassée le seuil autorisé !!!";
+        alerte += "L'humidité à dépassée le seuil autorisé !!! ";
         qWarning() << "\033[1;43;37m[WARNING] : L'humidité est de :" << hum << ", elle a dépassée l'interval autorisé [" << vect_chambre[i]->getHum_Min() << ", " << vect_chambre[i]->getHum_Max() << "]\033[0;0m";
       }
 
       if (hum < vect_chambre[i]->getHum_Min()) {
         // alerte l'humidité ne respecte pas l'interval demandé
-        alerte = "L'humidité n'atteint pas le niveau minimum demandé !!!";
+        alerte += "L\'humidité n\'atteint pas le niveau minimum demandé !!! ";
         qWarning() << "\033[1;43;37m[WARNING] : L'humidité est de :" << hum << ", elle a dépassée l'interval autorisé [" << vect_chambre[i]->getHum_Min() << ", " << vect_chambre[i]->getHum_Max() << "]\033[0;0m";
       }
 
@@ -213,6 +276,14 @@ void Traitement::saveDataRoomToProcess(QDateTime date, int co2, bool fall, float
   }
 }
 
+/**
+ * \fn telephoneSeuil
+ * \brief  Récupère les seuils des telephones
+ *         Enregistre les seuils dans les attributs du telephone correspondanteavec la méthode setAllSeuil
+ *
+ * \return false si l'enregistrement des seuils à échouer
+ *         true si les seuils ont bien été enregistrer
+ */
 int Traitement::telephoneSeuil() {
   bool success = false;
 
@@ -238,6 +309,17 @@ int Traitement::telephoneSeuil() {
   return success;
 }
 
+/**
+ * \fn openConnexionUser
+ * \brief  Ouvre une connexion websocket lié à un telephone
+ *
+ * \param[in] numero(QString) : id du telephone
+ * \param[in] IP(QString) : IP du telephone
+ * \param[in] port(int) : port du telephone
+ *
+ * \return false si l'ouverture websocket du telephone à échouer
+ *         true si l'ouverture websocket est un succès
+ */
 int Traitement::openConnexionUser(QString numero, QString IP, int port) {
   QString url = "ws://" + IP + ":" + QString::number(port);
 
@@ -253,8 +335,22 @@ int Traitement::openConnexionUser(QString numero, QString IP, int port) {
   }
 }
 
+/**
+ * \fn saveDataUserToProcess
+ * \brief  SLOT qui récupère les données émisent depuis les websockets telephones ouverts
+ *         Traite les données reçues
+ *
+ * Toutes les données reçues
+ * \param[in] timestamp(QDateTime) : date des données
+ * \param[in] pas(int) : nombre de pas fait par l'utilisateur
+ * \param[in] user(QString) : utilisateur du telephone
+ * \param[in] numero(QString) : numero du telephone
+ *
+ * \return Appel de la méthode insertCapteurs de la classe Database
+ *         On lui envoie en paramètre la requete d'insertion contenant les données reçues
+ */
 void Traitement::saveDataUserToProcess(QDateTime timestamp, int pas, QString user, QString numero) {
-  QString alerte = "false";
+  QString alerte = "";
 
   QString date = timestamp.toString(QString("yyyy-MM-dd hh:mm:ss"));
   QString heure_s = timestamp.toString(QString("hh:mm:ss"));
@@ -276,7 +372,7 @@ void Traitement::saveDataUserToProcess(QDateTime timestamp, int pas, QString use
         QString move = vect_deplacement[i].toString(QString("hh:mm:ss"));
         QString sp = seuil_pas.toString(QString("hh:mm:ss"));
         if (vect_deplacement[i] > seuil_pas) {
-          alerte = "L'utilisateur est immobile depuis trop longtemps !!!";
+          alerte += "L'utilisateur est immobile depuis trop longtemps !!!";
           qWarning() << "\033[1;43;37m[WARNING] : L'utilisateur n'a pas bougé depuis :" << move << "heures. Temps immobile maximum autorisé :" << sp << "\033[0;0m";
         } else qDebug() << "\033[1;42;37m[INFO] : L'utilisateur n'a pas bougé depuis :" << move << "heures. Temps immobile maximum autorisé :" << sp << "\033[0;0m";
 
