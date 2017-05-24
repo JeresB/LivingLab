@@ -178,6 +178,9 @@ int Traitement::openConnexionChambre(int id, QString IP, int port) {
  *         On lui envoie en paramètre la requete d'insertion contenant les données reçues
  */
 void Traitement::saveDataRoomToProcess(QDateTime date, int co2, bool fall, float temp, float hum, bool oven, QString presence, int id) {
+  if (roomSeuil()) {}
+  else qWarning() << "\033[1;43;37m[WARNING] : Récupération des seuils des chambres : FAILED\033[0;0m";
+
   QString alerte = "";
 
 
@@ -350,6 +353,9 @@ int Traitement::openConnexionUser(QString numero, QString IP, int port) {
  *         On lui envoie en paramètre la requete d'insertion contenant les données reçues
  */
 void Traitement::saveDataUserToProcess(QDateTime timestamp, int pas, QString user, QString numero) {
+  if (telephoneSeuil()) {}
+  else qWarning() << "\033[1;43;37m[WARNING] : Récupération des seuils des telephones : FAILED\033[0;0m";
+
   QString alerte = "";
 
   QString date = timestamp.toString(QString("yyyy-MM-dd hh:mm:ss"));
