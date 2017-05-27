@@ -8,8 +8,10 @@
  */
 #include "Traitement.hpp"
 #include <QDebug>
+#include "SmtpMime"
 
 QT_USE_NAMESPACE
+using namespace SimpleMail;
 
 /**
  * \fn Constructeur
@@ -24,7 +26,6 @@ Traitement::Traitement(QObject *parent) : QObject(parent) {
 
   matin = QTime(7, 0);
   soir = QTime(23, 0);
-
 
   // Fonction de récupération des adresses IP des pièces
   if (List("room")) qDebug() << "\033[1;42;37m[INFO] : Récupération de la liste des chambres : SUCCESS\033[0;0m";
@@ -41,9 +42,60 @@ Traitement::Traitement(QObject *parent) : QObject(parent) {
   else qWarning() << "\033[1;43;37m[WARNING] : Récupération des seuils des telephones : FAILED\033[0;0m";
 
 }
-/*!
- * \brief Constructeur
- */
+
+int Traitement::mail(int id, QString Objet, QString message_alerte) {
+  QByteArray result;
+  result = livinglab->requete("SELECT login_email, utilisateur_contact.login_email_user FROM utilisateur_contact, Utilisateur WHERE utilisateur_contact.login_email_user = Utilisateur.login_email_user AND Utilisateur.id_chambre =" + QString::number(id));
+
+  Sender smtp(QLatin1String("smtp.isen-ouest.fr"), 465, Sender::SslConnection);
+
+  // We need to set the username (your email address) and password
+  // for smtp authentification.
+
+  smtp.setUser(QLatin1String("elevecir2"));
+  smtp.setPassword(QLatin1String("Cir2Projet"));
+
+  // Now we create a MimeMessage object. This is the email.
+
+  MimeMessage message;
+
+  EmailAddress sender(QLatin1String("alerte@livinglab.fr"), QLatin1String("LivingLab"));
+  message.setSender(sender);
+
+  QJsonDocument jsonDoc = QJsonDocument::fromBinaryData(result);
+  QJsonArray jsonArray = jsonDoc.array();
+
+  QJsonValue champ = jsonArray.at(0);
+  QJsonObject champObject = champ.toObject();
+
+  QString user = champObject.value(QString{"login_email_user"}).toString();
+  qDebug() << user;
+
+  EmailAddress to(user, user);
+  message.addTo(to);
+
+  message.setSubject(QString(Objet));
+
+  // Now add some text to the email.
+  // First we create a MimeText object.
+
+  MimeText text;
+
+  text.setText(QString(message_alerte));
+
+  // Now add it to the mail
+  message.addPart(&text);
+
+  // Now we can send the mail
+  if (!smtp.sendMail(message)) {
+      qDebug() << "Failed to send mail!" << smtp.lastError();
+      return -3;
+  }
+
+  smtp.quit();
+
+  return true;
+}
 
 /**
  * \fn List
@@ -252,19 +304,23 @@ void Traitement::saveDataRoomToProcess(QDateTime date, int co2, bool fall, float
 
       if (hum > vect_chambre[i]->getHum_Max()) {
         // alerte l'humidité ne respecte pas l'interval demandé
-        alerte += "L'humidité à dépassée le seuil autorisé !!! ";
+        alerte += "Humidité supérieur au seuil autorisé !!! ";
         qWarning() << "\033[1;43;37m[WARNING] : L'humidité est de :" << hum << ", elle a dépassée l'interval autorisé [" << vect_chambre[i]->getHum_Min() << ", " << vect_chambre[i]->getHum_Max() << "]\033[0;0m";
       }
 
       if (hum < vect_chambre[i]->getHum_Min()) {
         // alerte l'humidité ne respecte pas l'interval demandé
-        alerte += "L\'humidité n\'atteint pas le niveau minimum demandé !!! ";
+        alerte += "Humidité inférieur au seuil autorisé !!! ";
         qWarning() << "\033[1;43;37m[WARNING] : L'humidité est de :" << hum << ", elle a dépassée l'interval autorisé [" << vect_chambre[i]->getHum_Min() << ", " << vect_chambre[i]->getHum_Max() << "]\033[0;0m";
       }
 
       // QUrl url("http://localhost/test.php");
       // QNetworkAccessManager nam;
       // QNetworkReply* reply = nam.get(QNetworkRequest(url));
+
+      if (alerte != "") {
+        mail(id, "Attention Alerte", alerte);
+      }
 
       QString date_s = date.toString(QString("yyyy-MM-dd hh:mm:ss"));
 

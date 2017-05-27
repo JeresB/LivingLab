@@ -13,7 +13,6 @@
 #include "Database.hpp"
 #include "Chambre.hpp"
 #include "Telephone.hpp"
-#include "smtp.hpp"
 
 /*! \class Traitement
  * \brief classe representant le traitement du programme
@@ -31,6 +30,7 @@ public:
      *  \param parent : Possibilité de donner le QObject parent
      */
     Traitement(QObject *parent = Q_NULLPTR);
+    int mail(int id, QString objet, QString message_alerte);
     /**
      * \fn List
      * \brief  Récupère les adresses IP
