@@ -65,7 +65,7 @@ static const uint qt_meta_data_Telephone[] = {
        5,    1,   45,    2, 0x0a /* Public */,
 
  // signals: parameters
-    QMetaType::Void, QMetaType::QDateTime, QMetaType::Int, QMetaType::QString, QMetaType::QString,    2,    2,    2,    2,
+    QMetaType::Void, QMetaType::QDateTime, QMetaType::Int, QMetaType::QString, QMetaType::Int,    2,    2,    2,    2,
 
  // slots: parameters
     QMetaType::Void,
@@ -81,7 +81,7 @@ void Telephone::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         Telephone *_t = static_cast<Telephone *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->sendTextToProcess((*reinterpret_cast< QDateTime(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4]))); break;
+        case 0: _t->sendTextToProcess((*reinterpret_cast< QDateTime(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4]))); break;
         case 1: _t->onConnected(); break;
         case 2: _t->closed(); break;
         case 3: _t->onTextMessageReceived((*reinterpret_cast< QString(*)>(_a[1]))); break;
@@ -91,7 +91,7 @@ void Telephone::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         int *result = reinterpret_cast<int *>(_a[0]);
         void **func = reinterpret_cast<void **>(_a[1]);
         {
-            typedef void (Telephone::*_t)(QDateTime , int , QString , QString );
+            typedef void (Telephone::*_t)(QDateTime , int , QString , int );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Telephone::sendTextToProcess)) {
                 *result = 0;
             }
@@ -136,7 +136,7 @@ int Telephone::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void Telephone::sendTextToProcess(QDateTime _t1, int _t2, QString _t3, QString _t4)
+void Telephone::sendTextToProcess(QDateTime _t1, int _t2, QString _t3, int _t4)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)), const_cast<void*>(reinterpret_cast<const void*>(&_t4)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);

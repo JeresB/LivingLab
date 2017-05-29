@@ -22,7 +22,7 @@ QT_USE_NAMESPACE
  *  \param id_chambre(int) : identifiant du telephone
  *  \param parent(QObject*) : Possibilité de donner le QObject parent
  */
-Telephone::Telephone(const QUrl &url, QString numero, QObject *parent) : QObject(parent), m_url(url), m_numero(numero) {
+Telephone::Telephone(const QUrl &url, int id_telephone, QObject *parent) : QObject(parent), m_url(url), id_tel(id_telephone) {
   connect(&m_Telephone, &QWebSocket::connected, this, &Telephone::onConnected);
   connect(&m_Telephone, &QWebSocket::disconnected, this, &Telephone::closed);
   m_Telephone.open(QUrl(url));
@@ -75,7 +75,7 @@ void Telephone::onTextMessageReceived(QString message) {
   int pas = JsonObject.value(QString{"STEP"}).toInt();
   QString user = JsonObject.value(QString{"USER"}).toString();
 
-  emit sendTextToProcess(timestamp, pas, user, m_numero);
+  emit sendTextToProcess(timestamp, pas, user, id_tel);
 }
 
 
@@ -86,8 +86,8 @@ void Telephone::onTextMessageReceived(QString message) {
  *
  * \return m_numero
  */
-QString Telephone::getID() {
-  return m_numero;
+int Telephone::getID() {
+  return id_tel;
 }
 
 /**

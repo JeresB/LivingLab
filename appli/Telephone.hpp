@@ -27,7 +27,7 @@ public:
      *  \param id_chambre(int) : identifiant du telephone
      *  \param parent(QObject*) : Possibilité de donner le QObject parent
      */
-    explicit Telephone(const QUrl &url, QString numero, QObject *parent = Q_NULLPTR);
+    explicit Telephone(const QUrl &url, int id_telephone, QObject *parent = Q_NULLPTR);
 
     // GETTERS
     /**
@@ -36,7 +36,7 @@ public:
      *
      * \return m_numero
      */
-    QString getID();
+    int getID();
     /**
      * \fn getPas()
      * \brief  getter : temps d'immobilité maximum
@@ -63,7 +63,7 @@ Q_SIGNALS:
      * \param[in] user(QString) : nom de l'utilisateur
      * \param[in] m_numero(QString) : identifiant du telephone
      */
-    void sendTextToProcess(QDateTime, int, QString, QString);
+    void sendTextToProcess(QDateTime, int, QString, int);
 
 private Q_SLOTS:
     /**
@@ -91,7 +91,7 @@ public Q_SLOTS:
 private:
     QWebSocket m_Telephone;
     QUrl m_url;
-    QString m_numero;
+    int id_tel;
     QString t_pas;
 };
 

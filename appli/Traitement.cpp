@@ -8,7 +8,7 @@
  */
 #include "Traitement.hpp"
 #include <QDebug>
-#include "SmtpMime"
+#include "smtp/SmtpMime"
 
 QT_USE_NAMESPACE
 using namespace SimpleMail;
@@ -43,9 +43,20 @@ Traitement::Traitement(QObject *parent) : QObject(parent) {
 
 }
 
-int Traitement::mail(int id, QString Objet, QString message_alerte) {
+/**
+ * \fn Mail
+ * \brief  Permet d'envoyer une alerte par mail
+ *
+ * \param[in] id(int) : id de la chambre ou du telephone
+ * \param[in] objet(QString) : id de la chambre ou du telephone
+ * \param[in] message_alerte(QString) : message d'alerte
+ * \param[in] type(int) : spécifie si c'est un telephone ou une chambre pour adapter la requete SQL
+ */
+int Traitement::mail(int id, QString Objet, QString message_alerte, int type) {
   QByteArray result;
-  result = livinglab->requete("SELECT login_email, utilisateur_contact.login_email_user FROM utilisateur_contact, Utilisateur WHERE utilisateur_contact.login_email_user = Utilisateur.login_email_user AND Utilisateur.id_chambre =" + QString::number(id));
+  if(type == 1) result = livinglab->requete("SELECT login_email, utilisateur_contact.login_email_user FROM utilisateur_contact, Utilisateur WHERE utilisateur_contact.login_email_user = Utilisateur.login_email_user AND Utilisateur.id_chambre =" + QString::number(id));
+  else if(type == 2) result = livinglab->requete("SELECT login_email, utilisateur_contact.login_email_user FROM utilisateur_contact, Utilisateur WHERE utilisateur_contact.login_email_user = Utilisateur.login_email_user AND Utilisateur.id_telephone =" + QString::number(id));
+  else qWarning() << "\033[1;43;37m[WARNING] : Récupération des adresses mails : FAILED\033[0;0m";
 
   Sender smtp(QLatin1String("smtp.isen-ouest.fr"), 465, Sender::SslConnection);
 
@@ -69,10 +80,17 @@ int Traitement::mail(int id, QString Objet, QString message_alerte) {
   QJsonObject champObject = champ.toObject();
 
   QString user = champObject.value(QString{"login_email_user"}).toString();
-  qDebug() << user;
 
   EmailAddress to(user, user);
   message.addTo(to);
+
+  for (int i = 0; i < jsonArray.count(); i++) {
+    QJsonValue champ = jsonArray.at(i);
+    QJsonObject champObject = champ.toObject();
+
+    QString contact = champObject.value(QString{"login_email"}).toString();
+    message.addTo(contact);
+  }
 
   message.setSubject(QString(Objet));
 
@@ -129,11 +147,12 @@ int Traitement::List(QString type) {
 
       success = openConnexionChambre(id, IP, port);
     } else if (type == "user") {
-      QString tel = champObject.value(QString{"numero"}).toString();
+      int id_telephone =  champObject.value(QString{"id_telephone"}).toInt();
+      //QString tel = champObject.value(QString{"numero"}).toString();
       QString IP = champObject.value(QString{"ip_telephone"}).toString();
       int port =  champObject.value(QString{"port_telephone"}).toInt();
 
-      success = openConnexionUser(tel, IP, port);
+      success = openConnexionUser(id_telephone, IP, port);
     }
 
     if (success == false) return false;
@@ -319,7 +338,7 @@ void Traitement::saveDataRoomToProcess(QDateTime date, int co2, bool fall, float
       // QNetworkReply* reply = nam.get(QNetworkRequest(url));
 
       if (alerte != "") {
-        mail(id, "Attention Alerte", alerte);
+        mail(id, "Attention Alerte", alerte, 1);
       }
 
       QString date_s = date.toString(QString("yyyy-MM-dd hh:mm:ss"));
@@ -346,7 +365,7 @@ void Traitement::saveDataRoomToProcess(QDateTime date, int co2, bool fall, float
 int Traitement::telephoneSeuil() {
   bool success = false;
 
-  QString requete = "SELECT * FROM seuil_user, telephone WHERE seuil_user.numero = telephone.numero";
+  QString requete = "SELECT * FROM seuil_user, telephone WHERE seuil_user.id_telephone = telephone.id_telephone";
   QByteArray result = livinglab->requete(requete);
 
   QJsonDocument jsonDoc = QJsonDocument::fromBinaryData(result);
@@ -359,7 +378,7 @@ int Traitement::telephoneSeuil() {
     QString pas = champObject.value(QString{"deplacement"}).toString();
 
     for (int j = 0; j < vect_user.size(); j++) {
-      if (vect_user[j]->getID() == champObject.value(QString{"numero"}).toString()) {
+      if (vect_user[j]->getID() == champObject.value(QString{"id_telephone"}).toInt()) {
         success = vect_user[j]->setAllSeuil(pas);
       }
     }
@@ -379,14 +398,14 @@ int Traitement::telephoneSeuil() {
  * \return false si l'ouverture websocket du telephone à échouer
  *         true si l'ouverture websocket est un succès
  */
-int Traitement::openConnexionUser(QString numero, QString IP, int port) {
+int Traitement::openConnexionUser(int id_telephone, QString IP, int port) {
   QString url = "ws://" + IP + ":" + QString::number(port);
 
   try {
-    vect_user << new Telephone(QUrl(url), numero);
+    vect_user << new Telephone(QUrl(url), id_telephone);
     vect_deplacement << QTime(0, 0, 0, 0);
-    connect(vect_user.last(), SIGNAL(sendTextToProcess(QDateTime, int, QString, QString)),
-     this, SLOT(saveDataUserToProcess(QDateTime, int, QString, QString)));
+    connect(vect_user.last(), SIGNAL(sendTextToProcess(QDateTime, int, QString, int)),
+     this, SLOT(saveDataUserToProcess(QDateTime, int, QString, int)));
     qDebug() << "\033[1;42;37m[INFO] : Connexion à l'adresse :" << url << ": établie !\033[0;0m";
     return true;
   } catch(...) {
@@ -408,7 +427,7 @@ int Traitement::openConnexionUser(QString numero, QString IP, int port) {
  * \return Appel de la méthode insertCapteurs de la classe Database
  *         On lui envoie en paramètre la requete d'insertion contenant les données reçues
  */
-void Traitement::saveDataUserToProcess(QDateTime timestamp, int pas, QString user, QString numero) {
+void Traitement::saveDataUserToProcess(QDateTime timestamp, int pas, QString user, int id_telephone) {
   if (telephoneSeuil()) {}
   else qWarning() << "\033[1;43;37m[WARNING] : Récupération des seuils des telephones : FAILED\033[0;0m";
 
@@ -418,7 +437,7 @@ void Traitement::saveDataUserToProcess(QDateTime timestamp, int pas, QString use
   QString heure_s = timestamp.toString(QString("hh:mm:ss"));
 
   for (int i = 0; i < vect_user.size(); i++) {
-    if (vect_user[i]->getID() == numero) {
+    if (vect_user[i]->getID() == id_telephone) {
       QTime seuil_pas = QTime::fromString(vect_user[i]->getPas(), "hh:mm:ss");
       QTime heure_time = QTime::fromString(heure_s, "hh:mm:ss");
       QString heure_actuel = heure_time.toString(QString("hh:mm:ss"));
@@ -442,11 +461,15 @@ void Traitement::saveDataUserToProcess(QDateTime timestamp, int pas, QString use
     }
   }
 
-  QString insert = "INSERT INTO `capteurUser` (`temps`, `pas`, `user`, `detection_alerte_user`, `numero`) VALUES ";
-  QString valeur = "('" + date + "', '" + QString::number(pas) + "', '" + user + "', '" + alerte + "', '" + numero + "')";
+  if (alerte != "") {
+    mail(id_telephone, "Attention Alerte", alerte, 2);
+  }
+
+  QString insert = "INSERT INTO `capteurUser` (`temps`, `pas`, `user`, `detection_alerte_user`, `id_telephone`) VALUES ";
+  QString valeur = "('" + date + "', '" + QString::number(pas) + "', '" + user + "', '" + alerte + "', '" + QString::number(id_telephone) + "')";
 
   QString requete = insert + valeur;
 
-  qDebug() << "\033[1;42;37m[INFO] : Demande d'insertion des données du telephone n° :" << numero << "\033[0;0m";
+  qDebug() << "\033[1;42;37m[INFO] : Demande d'insertion des données du telephone n° :" << id_telephone << "\033[0;0m";
   livinglab->insertCapteurs(requete);
 }

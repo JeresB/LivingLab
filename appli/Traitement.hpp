@@ -30,7 +30,18 @@ public:
      *  \param parent : Possibilité de donner le QObject parent
      */
     Traitement(QObject *parent = Q_NULLPTR);
-    int mail(int id, QString objet, QString message_alerte);
+
+    /**
+     * \fn Mail
+     * \brief  Permet d'envoyer une alerte par mail
+     *
+     * \param[in] id(int) : id de la chambre ou du telephone
+     * \param[in] objet(QString) : id de la chambre ou du telephone
+     * \param[in] message_alerte(QString) : message d'alerte
+     * \param[in] type(int) : spécifie si c'est un telephone ou une chambre pour adapter la requete SQL
+     */
+    int mail(int id, QString objet, QString message_alerte, int type);
+
     /**
      * \fn List
      * \brief  Récupère les adresses IP
@@ -42,6 +53,7 @@ public:
      *         true si l'ouverture des websockets est un succès
      */
     int List(QString);
+
     /**
      * \fn roomSeuil
      * \brief  Récupère les seuils des chambres
@@ -51,6 +63,7 @@ public:
      *         true si les seuils ont bien été enregistrer
      */
     int roomSeuil();
+
     /**
      * \fn telephoneSeuil
      * \brief  Récupère les seuils des telephones
@@ -60,6 +73,7 @@ public:
      *         true si les seuils ont bien été enregistrer
      */
     int telephoneSeuil();
+
     /**
      * \fn openConnexionChambre
      * \brief  Ouvre une connexion websocket lié à une chambre
@@ -72,6 +86,7 @@ public:
      *         true si l'ouverture websocket est un succès
      */
     int openConnexionChambre(int id, QString IP, int port);
+
     /**
      * \fn openConnexionUser
      * \brief  Ouvre une connexion websocket lié à un telephone
@@ -83,7 +98,7 @@ public:
      * \return false si l'ouverture websocket du telephone à échouer
      *         true si l'ouverture websocket est un succès
      */
-    int openConnexionUser(QString numero, QString IP, int port);
+    int openConnexionUser(int id_telephone, QString IP, int port);
 
 Q_SIGNALS:
 
@@ -121,7 +136,7 @@ private Q_SLOTS:
    * \return Appel de la méthode insertCapteurs de la classe Database
    *         On lui envoie en paramètre la requete d'insertion contenant les données reçues
    */
-  void saveDataUserToProcess(QDateTime, int, QString, QString);
+  void saveDataUserToProcess(QDateTime, int, QString, int);
 
 private:
   Database *livinglab;

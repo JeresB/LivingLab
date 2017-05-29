@@ -59,7 +59,7 @@ static const uint qt_meta_data_Traitement[] = {
 
  // slots: parameters
     QMetaType::Void, QMetaType::QDateTime, QMetaType::Int, QMetaType::Bool, QMetaType::Float, QMetaType::Float, QMetaType::Bool, QMetaType::QString, QMetaType::Int,    2,    2,    2,    2,    2,    2,    2,    2,
-    QMetaType::Void, QMetaType::QDateTime, QMetaType::Int, QMetaType::QString, QMetaType::QString,    2,    2,    2,    2,
+    QMetaType::Void, QMetaType::QDateTime, QMetaType::Int, QMetaType::QString, QMetaType::Int,    2,    2,    2,    2,
 
        0        // eod
 };
@@ -71,7 +71,7 @@ void Traitement::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->saveDataRoomToProcess((*reinterpret_cast< QDateTime(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< bool(*)>(_a[3])),(*reinterpret_cast< float(*)>(_a[4])),(*reinterpret_cast< float(*)>(_a[5])),(*reinterpret_cast< bool(*)>(_a[6])),(*reinterpret_cast< QString(*)>(_a[7])),(*reinterpret_cast< int(*)>(_a[8]))); break;
-        case 1: _t->saveDataUserToProcess((*reinterpret_cast< QDateTime(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4]))); break;
+        case 1: _t->saveDataUserToProcess((*reinterpret_cast< QDateTime(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4]))); break;
         default: ;
         }
     }
