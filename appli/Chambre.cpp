@@ -1,6 +1,6 @@
 /**
  * \file Chambre.cpp
- * \brief  Ouvre une websocket type chambre.
+ * \brief  Ouvre une websocket type Chambre.
  * \version 1
  * \date 24 mai 2017
  * \author {Jeremy B. & Théo D.}

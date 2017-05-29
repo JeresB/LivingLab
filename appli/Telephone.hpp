@@ -3,7 +3,7 @@
 
 /*!
  * \file Telephone.hpp
- * \brief Ouvre une websocket type telephone.
+ * \brief Ouvre une websocket type Telephone.
  * \author {Jeremy B. & Théo D.}
  * \version 1
  */

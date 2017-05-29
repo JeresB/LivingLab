@@ -452,7 +452,7 @@ void Traitement::saveDataUserToProcess(QDateTime timestamp, int pas, QString use
 
         QString move = vect_deplacement[i].toString(QString("hh:mm:ss"));
         QString sp = seuil_pas.toString(QString("hh:mm:ss"));
-        if (vect_deplacement[i] > seuil_pas) {
+        if (vect_deplacement[i] >= seuil_pas) {
           alerte += "L'utilisateur est immobile depuis trop longtemps !!!";
           qWarning() << "\033[1;43;37m[WARNING] : L'utilisateur n'a pas bougé depuis :" << move << "heures. Temps immobile maximum autorisé :" << sp << "\033[0;0m";
         } else qDebug() << "\033[1;42;37m[INFO] : L'utilisateur n'a pas bougé depuis :" << move << "heures. Temps immobile maximum autorisé :" << sp << "\033[0;0m";

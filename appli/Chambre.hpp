@@ -3,7 +3,7 @@
 
 /*!
  * \file Chambre.hpp
- * \brief Ouvre une websocket type chambre.
+ * \brief Ouvre une websocket type Chambre.
  * \author {Jeremy B. & Théo D.}
  * \version 1
  */
