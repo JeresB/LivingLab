@@ -51,24 +51,46 @@ OBJECTS_DIR   = ./
 SOURCES       = Chambre.cpp \
 		Database.cpp \
 		main.cpp \
-		smtp.cpp \
 		Telephone.cpp \
-		Traitement.cpp moc_Chambre.cpp \
+		Traitement.cpp \
+		smtp/emailaddress.cpp \
+		smtp/mimeattachment.cpp \
+		smtp/mimecontentformatter.cpp \
+		smtp/mimefile.cpp \
+		smtp/mimehtml.cpp \
+		smtp/mimeinlinefile.cpp \
+		smtp/mimemessage.cpp \
+		smtp/mimemultipart.cpp \
+		smtp/mimepart.cpp \
+		smtp/mimetext.cpp \
+		smtp/quotedprintable.cpp \
+		smtp/sender.cpp moc_Chambre.cpp \
 		moc_Database.cpp \
-		moc_smtp.cpp \
 		moc_Telephone.cpp \
-		moc_Traitement.cpp
+		moc_Traitement.cpp \
+		moc_sender.cpp
 OBJECTS       = Chambre.o \
 		Database.o \
 		main.o \
-		smtp.o \
 		Telephone.o \
 		Traitement.o \
+		emailaddress.o \
+		mimeattachment.o \
+		mimecontentformatter.o \
+		mimefile.o \
+		mimehtml.o \
+		mimeinlinefile.o \
+		mimemessage.o \
+		mimemultipart.o \
+		mimepart.o \
+		mimetext.o \
+		quotedprintable.o \
+		sender.o \
 		moc_Chambre.o \
 		moc_Database.o \
-		moc_smtp.o \
 		moc_Telephone.o \
-		moc_Traitement.o
+		moc_Traitement.o \
+		moc_sender.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -132,14 +154,43 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		appli.pro Chambre.hpp \
 		Database.hpp \
-		smtp.hpp \
 		Telephone.hpp \
-		Traitement.hpp Chambre.cpp \
+		Traitement.hpp \
+		smtp/emailaddress.h \
+		smtp/emailaddress_p.h \
+		smtp/mimeattachment.h \
+		smtp/mimecontentformatter.h \
+		smtp/mimefile.h \
+		smtp/mimehtml.h \
+		smtp/mimeinlinefile.h \
+		smtp/mimemessage.h \
+		smtp/mimemessage_p.h \
+		smtp/mimemultipart.h \
+		smtp/mimemultipart_p.h \
+		smtp/mimepart.h \
+		smtp/mimepart_p.h \
+		smtp/mimetext.h \
+		smtp/mimetext_p.h \
+		smtp/quotedprintable.h \
+		smtp/sender.h \
+		smtp/sender_p.h \
+		smtp/smtpexports.h Chambre.cpp \
 		Database.cpp \
 		main.cpp \
-		smtp.cpp \
 		Telephone.cpp \
-		Traitement.cpp
+		Traitement.cpp \
+		smtp/emailaddress.cpp \
+		smtp/mimeattachment.cpp \
+		smtp/mimecontentformatter.cpp \
+		smtp/mimefile.cpp \
+		smtp/mimehtml.cpp \
+		smtp/mimeinlinefile.cpp \
+		smtp/mimemessage.cpp \
+		smtp/mimemultipart.cpp \
+		smtp/mimepart.cpp \
+		smtp/mimetext.cpp \
+		smtp/quotedprintable.cpp \
+		smtp/sender.cpp
 QMAKE_TARGET  = appli
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = appli
@@ -317,8 +368,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents Chambre.hpp Database.hpp smtp.hpp Telephone.hpp Traitement.hpp $(DISTDIR)/
-	$(COPY_FILE) --parents Chambre.cpp Database.cpp main.cpp smtp.cpp Telephone.cpp Traitement.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents Chambre.hpp Database.hpp Telephone.hpp Traitement.hpp smtp/emailaddress.h smtp/emailaddress_p.h smtp/mimeattachment.h smtp/mimecontentformatter.h smtp/mimefile.h smtp/mimehtml.h smtp/mimeinlinefile.h smtp/mimemessage.h smtp/mimemessage_p.h smtp/mimemultipart.h smtp/mimemultipart_p.h smtp/mimepart.h smtp/mimepart_p.h smtp/mimetext.h smtp/mimetext_p.h smtp/quotedprintable.h smtp/sender.h smtp/sender_p.h smtp/smtpexports.h $(DISTDIR)/
+	$(COPY_FILE) --parents Chambre.cpp Database.cpp main.cpp Telephone.cpp Traitement.cpp smtp/emailaddress.cpp smtp/mimeattachment.cpp smtp/mimecontentformatter.cpp smtp/mimefile.cpp smtp/mimehtml.cpp smtp/mimeinlinefile.cpp smtp/mimemessage.cpp smtp/mimemultipart.cpp smtp/mimepart.cpp smtp/mimetext.cpp smtp/quotedprintable.cpp smtp/sender.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -341,17 +392,14 @@ check: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc_Chambre.cpp moc_Database.cpp moc_smtp.cpp moc_Telephone.cpp moc_Traitement.cpp
+compiler_moc_header_make_all: moc_Chambre.cpp moc_Database.cpp moc_Telephone.cpp moc_Traitement.cpp moc_sender.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_Chambre.cpp moc_Database.cpp moc_smtp.cpp moc_Telephone.cpp moc_Traitement.cpp
+	-$(DEL_FILE) moc_Chambre.cpp moc_Database.cpp moc_Telephone.cpp moc_Traitement.cpp moc_sender.cpp
 moc_Chambre.cpp: Chambre.hpp
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/var/www/html/LivingLab/appli -I/var/www/html/LivingLab/appli -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWebSockets -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include Chambre.hpp -o moc_Chambre.cpp
 
 moc_Database.cpp: Database.hpp
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/var/www/html/LivingLab/appli -I/var/www/html/LivingLab/appli -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWebSockets -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include Database.hpp -o moc_Database.cpp
-
-moc_smtp.cpp: smtp.hpp
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/var/www/html/LivingLab/appli -I/var/www/html/LivingLab/appli -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWebSockets -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include smtp.hpp -o moc_smtp.cpp
 
 moc_Telephone.cpp: Telephone.hpp
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/var/www/html/LivingLab/appli -I/var/www/html/LivingLab/appli -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWebSockets -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include Telephone.hpp -o moc_Telephone.cpp
@@ -361,6 +409,15 @@ moc_Traitement.cpp: Database.hpp \
 		Telephone.hpp \
 		Traitement.hpp
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/var/www/html/LivingLab/appli -I/var/www/html/LivingLab/appli -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWebSockets -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include Traitement.hpp -o moc_Traitement.cpp
+
+moc_sender.cpp: smtp/mimemessage.h \
+		smtp/mimepart.h \
+		smtp/mimecontentformatter.h \
+		smtp/smtpexports.h \
+		smtp/mimemultipart.h \
+		smtp/emailaddress.h \
+		smtp/sender.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/var/www/html/LivingLab/appli -I/var/www/html/LivingLab/appli -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWebSockets -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include smtp/sender.h -o moc_sender.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -386,17 +443,115 @@ main.o: main.cpp Traitement.hpp \
 		Telephone.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
-smtp.o: smtp.cpp smtp.hpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o smtp.o smtp.cpp
-
 Telephone.o: Telephone.cpp Telephone.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Telephone.o Telephone.cpp
 
 Traitement.o: Traitement.cpp Traitement.hpp \
 		Database.hpp \
 		Chambre.hpp \
-		Telephone.hpp
+		Telephone.hpp \
+		smtp/SmtpMime \
+		smtp/sender.h \
+		smtp/mimemessage.h \
+		smtp/mimepart.h \
+		smtp/mimecontentformatter.h \
+		smtp/smtpexports.h \
+		smtp/mimemultipart.h \
+		smtp/emailaddress.h \
+		smtp/mimehtml.h \
+		smtp/mimetext.h \
+		smtp/mimeattachment.h \
+		smtp/mimefile.h \
+		smtp/mimeinlinefile.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Traitement.o Traitement.cpp
+
+emailaddress.o: smtp/emailaddress.cpp smtp/emailaddress_p.h \
+		smtp/emailaddress.h \
+		smtp/smtpexports.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o emailaddress.o smtp/emailaddress.cpp
+
+mimeattachment.o: smtp/mimeattachment.cpp smtp/mimeattachment.h \
+		smtp/mimepart.h \
+		smtp/mimecontentformatter.h \
+		smtp/smtpexports.h \
+		smtp/mimefile.h \
+		smtp/mimepart_p.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mimeattachment.o smtp/mimeattachment.cpp
+
+mimecontentformatter.o: smtp/mimecontentformatter.cpp smtp/mimecontentformatter.h \
+		smtp/smtpexports.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mimecontentformatter.o smtp/mimecontentformatter.cpp
+
+mimefile.o: smtp/mimefile.cpp smtp/mimefile.h \
+		smtp/mimepart.h \
+		smtp/mimecontentformatter.h \
+		smtp/smtpexports.h \
+		smtp/mimepart_p.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mimefile.o smtp/mimefile.cpp
+
+mimehtml.o: smtp/mimehtml.cpp smtp/mimehtml.h \
+		smtp/mimetext.h \
+		smtp/mimepart.h \
+		smtp/mimecontentformatter.h \
+		smtp/smtpexports.h \
+		smtp/mimetext_p.h \
+		smtp/mimepart_p.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mimehtml.o smtp/mimehtml.cpp
+
+mimeinlinefile.o: smtp/mimeinlinefile.cpp smtp/mimeinlinefile.h \
+		smtp/mimefile.h \
+		smtp/mimepart.h \
+		smtp/mimecontentformatter.h \
+		smtp/smtpexports.h \
+		smtp/mimepart_p.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mimeinlinefile.o smtp/mimeinlinefile.cpp
+
+mimemessage.o: smtp/mimemessage.cpp smtp/mimemessage_p.h \
+		smtp/mimemessage.h \
+		smtp/mimepart.h \
+		smtp/mimecontentformatter.h \
+		smtp/smtpexports.h \
+		smtp/mimemultipart.h \
+		smtp/emailaddress.h \
+		smtp/quotedprintable.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mimemessage.o smtp/mimemessage.cpp
+
+mimemultipart.o: smtp/mimemultipart.cpp smtp/mimemultipart_p.h \
+		smtp/mimemultipart.h \
+		smtp/mimepart.h \
+		smtp/mimecontentformatter.h \
+		smtp/smtpexports.h \
+		smtp/mimepart_p.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mimemultipart.o smtp/mimemultipart.cpp
+
+mimepart.o: smtp/mimepart.cpp smtp/mimepart_p.h \
+		smtp/mimepart.h \
+		smtp/mimecontentformatter.h \
+		smtp/smtpexports.h \
+		smtp/quotedprintable.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mimepart.o smtp/mimepart.cpp
+
+mimetext.o: smtp/mimetext.cpp smtp/mimetext_p.h \
+		smtp/mimetext.h \
+		smtp/mimepart.h \
+		smtp/mimecontentformatter.h \
+		smtp/smtpexports.h \
+		smtp/mimepart_p.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mimetext.o smtp/mimetext.cpp
+
+quotedprintable.o: smtp/quotedprintable.cpp smtp/quotedprintable.h \
+		smtp/smtpexports.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o quotedprintable.o smtp/quotedprintable.cpp
+
+sender.o: smtp/sender.cpp smtp/sender_p.h \
+		smtp/sender.h \
+		smtp/mimemessage.h \
+		smtp/mimepart.h \
+		smtp/mimecontentformatter.h \
+		smtp/smtpexports.h \
+		smtp/mimemultipart.h \
+		smtp/emailaddress.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o sender.o smtp/sender.cpp
 
 moc_Chambre.o: moc_Chambre.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_Chambre.o moc_Chambre.cpp
@@ -404,14 +559,14 @@ moc_Chambre.o: moc_Chambre.cpp
 moc_Database.o: moc_Database.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_Database.o moc_Database.cpp
 
-moc_smtp.o: moc_smtp.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_smtp.o moc_smtp.cpp
-
 moc_Telephone.o: moc_Telephone.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_Telephone.o moc_Telephone.cpp
 
 moc_Traitement.o: moc_Traitement.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_Traitement.o moc_Traitement.cpp
+
+moc_sender.o: moc_sender.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_sender.o moc_sender.cpp
 
 ####### Install
 
