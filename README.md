@@ -1,12 +1,12 @@
 # LivingLab
 
-LivingLab est une application qui recueille des informations fournis par des capteurs installer dans une chambre.
+LivingLab est une application qui recueille des informations fournis par des capteurs installés dans une chambre.
 L'application C++ récupère, traite et stock ces données dans une base de données.
 L'application Web permet à un utilisateur de s'inscrire, se connecter, consulter les données liés à sa chambre.
 
 ## Pour commencer
 
-Ces instructions vous donneront une copie du projet pour des buts de test. Voir la partie installation pour déployer le projet sur votre système.
+Ces instructions vous donneront accés au projet. Voir la partie installation pour déployer le projet sur votre système.
 
 ### Prérequis
 
@@ -46,7 +46,7 @@ commande : make
 
 ## Lancement des tests
 
-Lancement de l'application c++ :
+Lancement de l'application c++ dans le dossier appli :
 
 ```
 ./appli
@@ -77,3 +77,5 @@ url : localhost/yourpath/LivingLab/
 ## Remerciement
 
 * Merci de contribuer au développement de ce projet
+* Dans le but d'améliorer celui-ci merci d'adresser vos don a Jeremy suivant: **n°FR3220041010131058030E03432**
+
