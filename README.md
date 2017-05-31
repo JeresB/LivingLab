@@ -18,7 +18,7 @@ Reporter les informations de connexion (Nom de l'utilisateur, nom du serveur, no
 Importer le fichier sql/sql.sql dans la base de donnée crée.
 ```
 
-### Installing
+### Installation
 
 Installation pas à pas du projet pour son bon fonctionnement
 
@@ -71,7 +71,7 @@ url : localhost/yourpath/LivingLab/
 ## Auteurs
 
 * **Théo Dupont**
-* **Jeremy Boiselet** - [Jeremy](http://www.jeremyboiselet.ovh)
+* **Jeremy Boiselet** - [Portfolio](http://www.jeremyboiselet.ovh)
 
 
 ## Remerciement
