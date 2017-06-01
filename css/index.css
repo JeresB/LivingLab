@@ -1,0 +1,89 @@
+body {
+  margin:0;
+  padding:0;
+  height: 500px;
+  background: url(../image/fond1.jpg) no-repeat center fixed; 
+  -webkit-background-size: cover; /* pour anciens Chrome et Safari */
+  background-size: cover; /* version standardisée */
+}
+
+#panel_connexion {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 80vh; /* poussé de la moitié de hauteur de viewport */
+
+}
+
+.btn {
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.bg-success {
+  background-color: #519331;
+  color: white;
+}
+
+.c_label {
+  min-width: 150px;
+}
+
+.i_label {
+  min-width: 250px;
+}
+
+.p_label {
+  min-width: 300px;
+}
+
+.a_label {
+    min-width: 400px;
+}
+
+#div_profil {
+  margin-top: 15vh;
+}
+
+#div_dashboard {
+  margin-top: 5vh;
+}
+
+.panel-data {
+	cursor: pointer;
+}
+
+.capteur_vert {
+  font-family: arial, sans-serif;
+  color: #3BBA14;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.capteur_rouge {
+  font-family: arial, sans-serif;
+  color: #D91E1E;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.capteur_bleu {
+  font-family: arial, sans-serif;
+  color: #143FCC;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.panel-data:hover{
+  -moz-box-shadow: 0px 0px 10px 1px #000000;
+  -webkit-box-shadow: 0px 0px 10px 1px #000000;
+  -o-box-shadow: 0px 0px 10px 1px #000000;
+  box-shadow: 0px 0px 10px 1px #000000;
+  filter:progid:DXImageTransform.Microsoft.Shadow(color=#000000, Direction=NaN, Strength=10);
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+
+#erreur_inscription {
+  margin-top: 40vh;
+}

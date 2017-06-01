@@ -1,0 +1,26 @@
+<!-- \file : historique.html -->
+<!-- \brief Module formulaire de recherche d'historique -->
+<!-- \author {Théo D. & Jeremy B.} -->
+<!-- \version 1 -->
+
+<div class = "panel panel-default">
+    <div class = "panel-heading">
+        <h1>Historique</h1>
+    </div>
+    <div class = "panel-body">
+        <form class="form-inline">
+            <div class="form-group">
+                <input type="datetime" class="form-control" id="debut" placeholder="Date de début">
+            </div>
+            <div class="form-group">
+                <input type="datetime" class="form-control" id="fin" placeholder="Date de fin">
+            </div>
+            <select id = "type" class = "form-control">
+                <option value = "1">CO2</option>
+                <option value = "2">Humidité</option>
+                <option value = "3">Température</option>
+            </select>
+            <button id = "recherche" type="submit" class="btn btn-default">Rechercher</button>
+        </form>
+    </div>
+</div>
