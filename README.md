@@ -13,7 +13,7 @@ Ces instructions vous donneront accés au projet. Voir la partie installation po
 Avant d'utiliser le projet :
 
 ```
-Placer le dossier principal LivingLab dans le dossier de votre serveur apache2, généralement dans le dossier /var/www/html/
+Placer le dossier principal dans le dossier de votre serveur apache2, généralement dans le dossier /var/www/html/
 Crée un nouvel utilisateur avec une base de donnée correspondante de type MySQL sur PHPMYADMIN.
 Reporter les informations de connexion (Nom de l'utilisateur, nom du serveur, nom de la base de données, mot de passe de l'utilisateur) dans les fichiers appli/bdd.conf et php/constants.php.
 Importer le fichier sql/sql.sql dans la base de donnée crée.
@@ -79,4 +79,3 @@ url : localhost/yourpath/LivingLab/
 
 * Merci de contribuer au développement de ce projet
 * Dans le but d'améliorer celui-ci merci d'adresser vos don a Jeremy suivant: **n°FR3220041010131058030E03432**
-
