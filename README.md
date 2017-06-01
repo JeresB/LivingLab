@@ -78,4 +78,3 @@ url : localhost/yourpath/LivingLab/
 ## Remerciement
 
 * Merci de contribuer au développement de ce projet
-* Dans le but d'améliorer celui-ci merci d'adresser vos don a Jeremy suivant: **n°FR3220041010131058030E03432**
